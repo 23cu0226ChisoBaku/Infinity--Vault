@@ -3,35 +3,39 @@ using UnityEngine;
 public interface IParam<T>
 {
     T GetParam();
+    void SetParam(T param);
+}
+public interface IParametrizable
+{
+    T GetParameter<T>();
+    void SetParameter<T>(T param);
 }
 
-public struct CharaParam
-{
-    public float MoveSpeed;
-    public float ClimbSpeed;
-    public string test;
-}
 
 public class Param<T> : IParam<T> where T : struct
 {
     protected T param;
     public T GetParam() => param;
+    public void SetParam(T param) => this.param = param;
 
 }
 
 public class CharaModel : Param<CharaParam>
 {
-    public CharaModel(float moveSpeed, float climbSpeed)
+    public CharaModel()
     {
-        param = new CharaParam 
-        {
-            MoveSpeed = moveSpeed,
-            ClimbSpeed = climbSpeed
-        };
+        param = new CharaParam();
+    }
+    public CharaModel(float moveSpeed, float climbSpeed)
+        : this()
+    {
+        param.MoveSpeed = moveSpeed;
+        param.ClimbSpeed = climbSpeed;
     }
 }
 
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(PlayerModelSetter))]
+public class PlayerController : MonoBehaviour,IParametrizable
 {
     private enum PlayerState
     {
@@ -47,10 +51,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     
     private PhysicsMaterial2D _noFrictionMat;
-
-    public float _moveSpeed;
-    public float _climbSpeed;
-
     private IParam<CharaParam> _param;
 
     private bool _isClimbable;
@@ -63,15 +63,18 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        _param = new CharaModel(_moveSpeed, _climbSpeed);
+        _param = new CharaModel();
 
         _isClimbable = false;
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
 
-        _noFrictionMat = new PhysicsMaterial2D();
-        _noFrictionMat.friction = 0f;
-        _rigidbody2D.sharedMaterial = _noFrictionMat;
+        if (_rigidbody2D != null)
+        {
+            _noFrictionMat = new PhysicsMaterial2D();
+            _noFrictionMat.friction = 0f;
+            _rigidbody2D.sharedMaterial = _noFrictionMat;
+        }
     }
     private void Update()
     {
@@ -132,6 +135,10 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D.velocity = Vector2.right * (int)_moveDir * _param.GetParam().MoveSpeed;
     }
 
+    public void SetParam(CharaParam charaParam)
+    {
+        _param.SetParam(charaParam);
+    }
     private void OnTriggerEnter2D(Collider2D other) 
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
@@ -150,7 +157,7 @@ public class PlayerController : MonoBehaviour
             {
                 _state = PlayerState.None;
                 _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-                // NothingÇ…Ç∑ÇÈ
+                // Nothing„Å´„Åô„Çã
                 _rigidbody2D.excludeLayers = 0;
             }
             _interactTarget = null;
@@ -166,4 +173,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public T GetParameter<T>()
+    {
+        if (typeof(CharaParam).IsAssignableFrom(typeof(T)))
+        {
+            return (T)_param;
+        }
+
+        throw new System.Exception($"Param type of {typeof(T).Name} does not exist");
+    }
+
+    public void SetParameter<T>(T param)
+    {
+        if (typeof(CharaParam).IsAssignableFrom(typeof(T)))
+        {
+            _param.SetParam((CharaParam)(object)param);
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"Param type of {typeof(T).Name} does not exist");
+#endif
+        }
+    }
 }
