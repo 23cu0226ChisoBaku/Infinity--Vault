@@ -34,7 +34,7 @@ public class CharaModel : Param<CharaParam>
     }
 }
 
-[RequireComponent(typeof(PlayerModelSetter))]
+[RequireComponent(typeof(PlayerModel))]
 public class PlayerController : MonoBehaviour,IParametrizable
 {
     private enum PlayerState
@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour,IParametrizable
     private Rigidbody2D _rigidbody2D;
     
     private PhysicsMaterial2D _noFrictionMat;
-    private IParam<CharaParam> _param;
+    private IParam<CharaParam> _param = new CharaModel();
 
     private bool _isClimbable;
 
@@ -63,8 +63,6 @@ public class PlayerController : MonoBehaviour,IParametrizable
 
     private void Awake()
     {
-        _param = new CharaModel();
-
         _isClimbable = false;
 
         _rigidbody2D = GetComponent<Rigidbody2D>();

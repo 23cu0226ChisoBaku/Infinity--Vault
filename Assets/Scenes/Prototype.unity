@@ -1817,6 +1817,9 @@ PrefabInstance:
       addedObject: {fileID: 2144849471}
     - targetCorrespondingSourceObject: {fileID: 1000012663239756, guid: 13c470c5b8dcd4854834911f7e0a9a6c, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2144849473}
+    - targetCorrespondingSourceObject: {fileID: 1000012663239756, guid: 13c470c5b8dcd4854834911f7e0a9a6c, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2144849472}
   m_SourcePrefab: {fileID: 100100000, guid: 13c470c5b8dcd4854834911f7e0a9a6c, type: 3}
 --- !u!1 &1128565981
@@ -2208,8 +2211,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9beec85240b4ed74287b4040144d3b8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 3
-  _climbSpeed: 2
+--- !u!114 &2144849473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144849467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f12632b71e0b1994b89d5e0323f68f1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed_: 7
+  ClimbSpeed_: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
