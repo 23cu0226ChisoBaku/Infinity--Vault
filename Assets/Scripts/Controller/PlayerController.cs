@@ -61,6 +61,9 @@ public class PlayerController : MonoBehaviour,IParametrizable
 
     private Transform _interactTarget;
 
+    // TODO
+    private IInteractable _interactable = null;
+
     private void Awake()
     {
         _isClimbable = false;
@@ -86,6 +89,14 @@ public class PlayerController : MonoBehaviour,IParametrizable
             else if (Input.GetKey(KeyCode.RightArrow))
             {
                 _moveDir = MoveDir.Right;
+            }
+        }
+
+        if (_interactable != null)
+        {
+            if (Input.GetKeyDown(_interactable.GetTargetInfo().InteractKey))
+            {
+                _interactable.DoInteract();
             }
         }
 
@@ -130,7 +141,8 @@ public class PlayerController : MonoBehaviour,IParametrizable
 
     private void FixedUpdate() 
     {
-        _rigidbody2D.velocity = Vector2.right * (int)_moveDir * _param.GetParam().MoveSpeed;
+        var fallSpeed = _rigidbody2D.velocity.y < -10f ? -10f : _rigidbody2D.velocity.y;
+        _rigidbody2D.velocity = new Vector2((int)_moveDir * _param.GetParam().MoveSpeed, fallSpeed);
     }
 
     public void SetParam(CharaParam charaParam)
@@ -143,6 +155,14 @@ public class PlayerController : MonoBehaviour,IParametrizable
         {
             _isClimbable = true;
             _interactTarget = other.gameObject.transform;
+        }
+
+        if (_interactable == null)
+        {
+            if (other.gameObject.TryGetComponent(out _interactable))
+            {
+                _interactable.BeginInteract();
+            }
         }
     }
 
@@ -159,6 +179,12 @@ public class PlayerController : MonoBehaviour,IParametrizable
                 _rigidbody2D.excludeLayers = 0;
             }
             _interactTarget = null;
+        }
+
+        if (other.gameObject.TryGetComponent(out _interactable))
+        {
+            _interactable.EndInteract();
+            _interactable = null;
         }
     }
 
