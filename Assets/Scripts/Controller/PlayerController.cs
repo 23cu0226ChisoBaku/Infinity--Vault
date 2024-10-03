@@ -49,11 +49,15 @@ public class PlayerController : MonoBehaviour,IParametrizable
         Right = 1,
     }
     private Rigidbody2D _rigidbody2D;
+
+    private CapsuleCollider2D _capsuleCollider;
     
     private PhysicsMaterial2D _noFrictionMat;
     private IParam<CharaParam> _param = new CharaModel();
 
     private bool _isClimbable;
+
+    private bool _isClimbing;
 
     private MoveDir _moveDir = MoveDir.None;
 
@@ -64,9 +68,16 @@ public class PlayerController : MonoBehaviour,IParametrizable
     // TODO
     private IInteractable _interactable = null;
 
+    private RaycastHit2D[] _hitInfoBuffer = new RaycastHit2D[3];
+
     private void Awake()
     {
+        // TODO
+        // テストのため、プレイヤーをアイテムの生成にする
+        VaultManager.Instance.InitItem();
+        
         _isClimbable = false;
+        _isClimbing = false;
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
 
@@ -76,6 +87,8 @@ public class PlayerController : MonoBehaviour,IParametrizable
             _noFrictionMat.friction = 0f;
             _rigidbody2D.sharedMaterial = _noFrictionMat;
         }
+
+        _capsuleCollider = GetComponent<CapsuleCollider2D>();
     }
     private void Update()
     {
@@ -113,8 +126,9 @@ public class PlayerController : MonoBehaviour,IParametrizable
                     transform.position = adjustPos;
 
                     _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+                    
                     _rigidbody2D.velocity = Vector2.zero;
-
+                    _rigidbody2D.gravityScale = 0f;
                     _rigidbody2D.excludeLayers = LayerMask.GetMask("Ground");
                 }
                 transform.Translate(0f, _param.GetParam().ClimbSpeed * Time.deltaTime, 0f);
@@ -130,6 +144,7 @@ public class PlayerController : MonoBehaviour,IParametrizable
                     transform.position = adjustPos;
 
                     _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+                    _rigidbody2D.gravityScale = 0f;
                     _rigidbody2D.velocity = Vector2.zero;
 
                     _rigidbody2D.excludeLayers = LayerMask.GetMask("Ground");
@@ -142,7 +157,43 @@ public class PlayerController : MonoBehaviour,IParametrizable
     private void FixedUpdate() 
     {
         var fallSpeed = _rigidbody2D.velocity.y < -10f ? -10f : _rigidbody2D.velocity.y;
+        if (_state == PlayerState.Climb)
+        {
+            fallSpeed = 0f;
+        }
         _rigidbody2D.velocity = new Vector2((int)_moveDir * _param.GetParam().MoveSpeed, fallSpeed);
+
+        // はしごの付近にいるかをレイキャストで探す
+        var rayLength = _capsuleCollider.size.y * 0.5f + _param.GetParam().ClimbSpeed * Time.deltaTime;
+        var rayLayerMask = LayerMask.GetMask("Interactable");
+        ContactFilter2D filter2D = new ContactFilter2D();
+        filter2D.NoFilter();
+        filter2D.useLayerMask = true;
+        filter2D.SetLayerMask(rayLayerMask);
+        int hitCnt = _capsuleCollider.Raycast(Vector2.down, filter2D, _hitInfoBuffer, rayLength);
+
+        if (hitCnt < 1)
+        {
+            if(_state == PlayerState.Climb)
+            {
+                _state = PlayerState.None;
+                _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+                _rigidbody2D.gravityScale = 10f;
+                // Nothingにする
+                _rigidbody2D.excludeLayers = 0;
+            }
+            _interactTarget = null;
+            _isClimbable = false;
+        }
+        else
+        {
+            for (int i = 0; i < hitCnt; ++i)
+            {
+                _interactTarget = _hitInfoBuffer[i].collider.gameObject.transform;
+                _isClimbable = true;
+            }
+        }
+
     }
 
     public void SetParam(CharaParam charaParam)
@@ -151,11 +202,11 @@ public class PlayerController : MonoBehaviour,IParametrizable
     }
     private void OnTriggerEnter2D(Collider2D other) 
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
-        {
-            _isClimbable = true;
-            _interactTarget = other.gameObject.transform;
-        }
+        // if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
+        // {
+        //     _isClimbable = true;
+        //     _interactTarget = other.gameObject.transform;
+        // }
 
         if (_interactable == null)
         {
@@ -168,18 +219,19 @@ public class PlayerController : MonoBehaviour,IParametrizable
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
-        {
-            _isClimbable = false;
-            if(_state == PlayerState.Climb)
-            {
-                _state = PlayerState.None;
-                _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-                // Nothingにする
-                _rigidbody2D.excludeLayers = 0;
-            }
-            _interactTarget = null;
-        }
+        // if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
+        // {
+        //     _isClimbable = false;
+        //     if(_state == PlayerState.Climb)
+        //     {
+        //         _state = PlayerState.None;
+        //         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+        //         _rigidbody2D.gravityScale = 10f;
+        //         // Nothingにする
+        //         _rigidbody2D.excludeLayers = 0;
+        //     }
+        //     _interactTarget = null;
+        // }
 
         if (other.gameObject.TryGetComponent(out _interactable))
         {
@@ -204,6 +256,7 @@ public class PlayerController : MonoBehaviour,IParametrizable
             return (T)_param;
         }
 
+        // TODO
         throw new System.Exception($"Param type of {typeof(T).Name} does not exist");
     }
 
@@ -220,4 +273,18 @@ public class PlayerController : MonoBehaviour,IParametrizable
 #endif
         }
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos() 
+    {
+        Gizmos.color = Color.cyan;
+        if(_capsuleCollider != null)
+        {
+            Gizmos.DrawLine(
+                                (Vector2)transform.position + _capsuleCollider.offset,
+                                (Vector2)transform.position + _capsuleCollider.offset + Vector2.down * _capsuleCollider.size.y * 0.5f + Vector2.down * _param.GetParam().ClimbSpeed * Time.deltaTime
+                           );  
+        }
+    }
+#endif
 }

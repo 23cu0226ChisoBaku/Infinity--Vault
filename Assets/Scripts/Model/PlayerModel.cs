@@ -66,7 +66,7 @@ public class PlayerModel : MonoBehaviour
         Debug.Log($"Old Value: {old}");
         Debug.Log($"New Value: {_charaParam.MoveSpeed}");
 
-        if (MEqual.IsEqual(old, _charaParam.MoveSpeed))
+        if (MLib.MLib.IsEqual(old, _charaParam.MoveSpeed))
         {
             Debug.LogWarning("Equals");
             return;
@@ -82,7 +82,7 @@ public class PlayerModel : MonoBehaviour
         Debug.Log($"Old Value: {old}");
         Debug.Log($"New Value: {_charaParam.ClimbSpeed}");
 
-        if (MEqual.IsEqual(old, _charaParam.ClimbSpeed))
+        if (MLib.MLib.IsEqual(old, _charaParam.ClimbSpeed))
         {
             return;
         }

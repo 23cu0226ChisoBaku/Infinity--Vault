@@ -1,7 +1,7 @@
 namespace MLib
 {
 
-    internal static class MEqual
+    public static partial class MLib
     {
         internal static bool IsEqual<T>(T a, T b)
         {

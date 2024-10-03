@@ -2,18 +2,28 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class VaultController : InteractableObj
+public class VaultController : InteractableObj , IItemSettable
 {
     private readonly static string RESOURCES_MESSAGE_BOX_PATH = "Prefabs/GlobalMessageBox";
     private GameObject _messageBox;
     private TMP_Text _infoMessageUI;
+    // TODO
+    public GameObject PuzzlePrefab;
+    private GameObject _puzzle;
+    private bool _isOpened;
+
+    private Item _item;
+
     private void Awake()
     {
         _info = new InteractTargetInfo
         {
             Name = "Vault",
-            InteractKey = KeyCode.E
+            InteractKey = KeyCode.E,
+            Layer = gameObject.layer,
         };
+
+        _isOpened = false;
     }
     
     public override void BeginInteract()
@@ -55,14 +65,43 @@ public class VaultController : InteractableObj
 
     public override void DoInteract()
     {
-        Destroy(gameObject);
+        if (PuzzlePrefab != null)
+        {
+            _puzzle = Instantiate(PuzzlePrefab);
+
+            var puzzleCtrl = _puzzle.GetComponent<VaultPuzzleController>();
+
+            if (puzzleCtrl != null)
+            {
+                puzzleCtrl.RegisterFinishEvent(OnPuzzleFinish);
+            }
+        }
+
+        // メッセージを隠しておく
+        _messageBox.SetActive(false);
     }
 
     public override void EndInteract()
     {
+        if (_puzzle != null)
+        {
+            Destroy(_puzzle);
+        }
         _messageBox.SetActive(false);
+
+        if (_isOpened)
+        {
+            Destroy(gameObject);
+        }
     }
 
+    private void OnPuzzleFinish()
+    {
+        _puzzle.GetComponent<VaultPuzzleController>().UnregisterFinishEvent(OnPuzzleFinish);
+        _isOpened = true;
+        Debug.Log($"Drop Item: {_item.name}");
+        EndInteract();
+    }
     private void OnDestroy() 
     {
         if (_messageBox != null)
@@ -71,4 +110,8 @@ public class VaultController : InteractableObj
         }
     }
 
+    public void SetItem(Item item)
+    {
+        _item = item;
+    }
 }
