@@ -1,13 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using MLib;
+using MDesingPattern.MMediator;
 
-public class PlayerModel : MonoBehaviour
+public class PlayerModel : MonoBehaviour,IMediatable<PlayerModel,IPlayerUIInfo>,IPlayerUIInfo
 {
-    private CharaParam _charaParam = new CharaParam();
+    private static CharaParam _charaParam = new CharaParam();
     private IParametrizable _playerParamContainer;
+
+    private IMediator<PlayerModel,IPlayerUIInfo> _uiMediator;
 
     [SerializeProperty("MoveSpeed")]
     public float MoveSpeed_;
@@ -22,7 +22,7 @@ public class PlayerModel : MonoBehaviour
     {
         get
         {
-            return MoveSpeed_;
+            return _charaParam.MoveSpeed;
         }
         private set
         {
@@ -32,12 +32,11 @@ public class PlayerModel : MonoBehaviour
             OnChangeMoveSpeedValue(old);
         }
     }
-
     public float ClimbSpeed
     {
         get
         {
-            return ClimbSpeed_;
+            return _charaParam.ClimbSpeed;
         }
         private set
         {
@@ -48,24 +47,42 @@ public class PlayerModel : MonoBehaviour
         }
     }
 
+    public int Wealth
+    {
+        get
+        {
+            return _charaParam.Wealth;
+        }
+        private set
+        {
+            int old = _charaParam.Wealth;
+            _charaParam.Wealth = value;
+            OnChangeWealthValue(old);
+        }
+    }
+
     private void Awake()
     {   
         if (TryGetComponent(out _playerParamContainer))
         {
             _charaParam.MoveSpeed = MoveSpeed_;
             _charaParam.ClimbSpeed = ClimbSpeed_;
+            _charaParam.Wealth = 0;
             _playerParamContainer.SetParameter(_charaParam);
         }
         else
         {
             throw new System.Exception("Can not get player controller");
         }
+
+        _uiMediator = FindAnyObjectByType<PlayerUIController>();
     }
     private void OnChangeMoveSpeedValue(float old)
     {
+#if UNITY_EDITOR
         Debug.Log($"Old Value: {old}");
         Debug.Log($"New Value: {_charaParam.MoveSpeed}");
-
+#endif
         if (MLib.MLib.IsEqual(old, _charaParam.MoveSpeed))
         {
             Debug.LogWarning("Equals");
@@ -79,9 +96,10 @@ public class PlayerModel : MonoBehaviour
 
     private void OnChangeClimbSpeedValue(float old)
     {
+#if UNITY_EDITOR
         Debug.Log($"Old Value: {old}");
         Debug.Log($"New Value: {_charaParam.ClimbSpeed}");
-
+#endif
         if (MLib.MLib.IsEqual(old, _charaParam.ClimbSpeed))
         {
             return;
@@ -90,6 +108,35 @@ public class PlayerModel : MonoBehaviour
         // TODO
         _playerParamContainer?.SetParameter(_charaParam);
         _climbSpeedChangeEvent?.Invoke(_charaParam.ClimbSpeed);
+    }
+
+    private void OnChangeWealthValue(int old)
+    {
+#if UNITY_EDITOR
+        Debug.Log($"Old Value: {old}");
+        Debug.Log($"New Value: {_charaParam.Wealth}");
+#endif
+        if(MLib.MLib.IsEqual(old,_charaParam.Wealth))
+        {
+            return;
+        }
+
+        if (_uiMediator.IsAlive())
+        {
+            _uiMediator.Notify(this,this);
+        }
+
+    }
+
+    void IMediatable<PlayerModel, IPlayerUIInfo>.SetMediator(IMediator<PlayerModel, IPlayerUIInfo> mediator)
+    {
+        _uiMediator = mediator;
+    }
+
+    // TODO test code
+    public void AddWealth(int wealth)
+    {
+        Wealth += wealth;
     }
 }
 

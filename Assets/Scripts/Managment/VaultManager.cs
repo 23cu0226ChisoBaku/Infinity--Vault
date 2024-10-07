@@ -12,10 +12,10 @@ public class VaultManager : SingletonMono<VaultManager>
         itemContainers.Shuffle();
 
         // KeyItem‚ðƒZƒbƒg
-        itemContainers[0].SetItem(new Item { name = "KeyItem"});
+        itemContainers[0].SetItem(new ItemInfo { Name = "KeyItem"});
         for(int i = 1; i < itemContainers.Length; ++i)
         {
-            itemContainers[i].SetItem(new Item { name = "None"});
+            itemContainers[i].SetItem(new ItemInfo { Name = "None"});
         }
     }
 }

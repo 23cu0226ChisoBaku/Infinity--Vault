@@ -13,7 +13,7 @@ public class VaultController : InteractableObj , IItemSettable
     private GameObject _puzzle;
     private bool _isOpened;
 
-    private Item _item;
+    private ItemInfo _item;
 
     private void Awake()
     {
@@ -100,8 +100,9 @@ public class VaultController : InteractableObj , IItemSettable
     {
         _puzzle.GetComponent<VaultPuzzleController>().UnregisterFinishEvent(OnPuzzleFinish);
         _isOpened = true;
+        Debug.LogError($"Drop Item: {_item.Name}");
 #if UNITY_EDITOR
-        Debug.LogWarning($"Drop Item: {_item.name}");
+        Debug.LogWarning($"Drop Item: {_item.Name}");
 #endif
         EndInteract();
     }
@@ -113,7 +114,7 @@ public class VaultController : InteractableObj , IItemSettable
         }
     }
 
-    public void SetItem(Item item)
+    public void SetItem(ItemInfo item)
     {
         _item = item;
     }

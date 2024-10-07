@@ -1,8 +1,22 @@
 
-public struct Item
+public enum EItemType
+{
+    None,
+    Worth,
+    Item,
+    KeyItem,
+}
+public struct ItemInfo
 {
     //public Guid UniqueID;
-    public string name;
+    public string Name;
+    public EItemType Type;
+
+}
+
+public struct GemInfo
+{
+
 }
 
 internal interface IItem
@@ -10,14 +24,14 @@ internal interface IItem
 
 }
 
-internal interface IItemGetable
+public interface IItemGetable
 {
-    Item GetItem();
+    void GetItem(ItemInfo item);
 }
 
 internal interface IItemSettable
 {
-    void SetItem(Item item);
+    void SetItem(ItemInfo item);
 }
 
 internal interface IItemContainer : IItemGetable, IItemSettable

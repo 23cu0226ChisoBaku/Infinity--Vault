@@ -1,3 +1,4 @@
+using MDesingPattern.MMediator;
 using UnityEngine;
 
 public interface IParam<T>
@@ -10,8 +11,6 @@ public interface IParametrizable
     T GetParameter<T>();
     void SetParameter<T>(T param);
 }
-
-
 public class Param<T> : IParam<T> where T : struct
 {
     protected T param;
@@ -31,11 +30,12 @@ public class CharaModel : Param<CharaParam>
     {
         param.MoveSpeed = moveSpeed;
         param.ClimbSpeed = climbSpeed;
+        param.Wealth = 0;
     }
 }
 
 [RequireComponent(typeof(PlayerModel))]
-public class PlayerController : MonoBehaviour,IParametrizable
+public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable
 {
     private enum PlayerState
     {
@@ -89,17 +89,18 @@ public class PlayerController : MonoBehaviour,IParametrizable
         }
 
         _capsuleCollider = GetComponent<CapsuleCollider2D>();
+
     }
     private void Update()
     {
         _moveDir = MoveDir.None;
         if (_state != PlayerState.Climb)
         {
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.A))
             {
                 _moveDir = MoveDir.Left;
             }
-            else if (Input.GetKey(KeyCode.RightArrow))
+            else if (Input.GetKey(KeyCode.D))
             {
                 _moveDir = MoveDir.Right;
             }
@@ -115,7 +116,7 @@ public class PlayerController : MonoBehaviour,IParametrizable
 
         if (_isClimbable)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.W))
             {
                 if(_state != PlayerState.Climb)
                 {
@@ -133,7 +134,7 @@ public class PlayerController : MonoBehaviour,IParametrizable
                 }
                 transform.Translate(0f, _param.GetParam().ClimbSpeed * Time.deltaTime, 0f);
             }
-            else if (Input.GetKey(KeyCode.DownArrow))
+            else if (Input.GetKey(KeyCode.S))
             {
                 if(_state != PlayerState.Climb)
                 {
@@ -215,6 +216,11 @@ public class PlayerController : MonoBehaviour,IParametrizable
                 _interactable.BeginInteract();
             }
         }
+
+        if (other.gameObject.TryGetComponent(out IPickable pickable))
+        {
+            pickable.OnPick(this);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -284,6 +290,23 @@ public class PlayerController : MonoBehaviour,IParametrizable
                                 (Vector2)transform.position + _capsuleCollider.offset,
                                 (Vector2)transform.position + _capsuleCollider.offset + Vector2.down * _capsuleCollider.size.y * 0.5f + Vector2.down * _param.GetParam().ClimbSpeed * Time.deltaTime
                            );  
+        }
+    }
+
+    public void GetItem(ItemInfo item)
+    {
+        switch(item.Type)
+        {
+            case EItemType.Worth:
+            {
+                PlayerModel model = GetComponent<PlayerModel>();
+                model.AddWealth(100);
+            }
+            break;
+            default:
+            {
+                throw new System.NotImplementedException();
+            }
         }
     }
 #endif
