@@ -1,5 +1,6 @@
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class VaultController : InteractableObj , IItemSettable
@@ -99,7 +100,9 @@ public class VaultController : InteractableObj , IItemSettable
     {
         _puzzle.GetComponent<VaultPuzzleController>().UnregisterFinishEvent(OnPuzzleFinish);
         _isOpened = true;
-        Debug.Log($"Drop Item: {_item.name}");
+#if UNITY_EDITOR
+        Debug.LogWarning($"Drop Item: {_item.name}");
+#endif
         EndInteract();
     }
     private void OnDestroy() 
