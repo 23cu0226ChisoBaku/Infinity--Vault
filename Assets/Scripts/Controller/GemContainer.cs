@@ -1,17 +1,13 @@
 using UnityEngine;
 
-public class GemController : MonoBehaviour,IPickable
+public class GemContainer : ItemContainer
 {
     public EGemType GemType;
-    public Gem Gem;
-
-    public ItemInfo Info => Gem.Info;
-
-    public void OnPick(IItemGetable getable)
+    public override void OnPick(IItemGetable getable)
     {
         if (getable.IsAlive())
         {
-            getable.GetItem(Gem.Info);
+            getable.GetItem(_itemInstance.Info);
         }
     }
 
@@ -21,7 +17,7 @@ public class GemController : MonoBehaviour,IPickable
         {
             case EGemType.Emerald:
             {
-                Gem = new Emerald();
+                _itemInstance = new Emerald();
             }
             break;
             default:
