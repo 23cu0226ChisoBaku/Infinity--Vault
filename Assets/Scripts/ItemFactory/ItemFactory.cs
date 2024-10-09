@@ -3,30 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using MDesingPattern.MFactory;
 using UnityEngine;
-//using MError;
-public class Error
-    {
-        private string _errorMsg;
-        private object _errorTarget;
+using MError;
+using MSingleton;
 
-        public Error(string errorMsg, object target)
-        {
-            _errorMsg = errorMsg;
-            _errorTarget = target;
-        }
+public abstract class AbstractFactoryGroup<T> where T : class
+{
+    protected Dictionary<string,T> _factoryGroup;
+}
 
-        public string What()
-        {
-            return _errorMsg;
-        }
-
-        public object ErrorSource()
-        {
-            return _errorTarget;
-        }
-    }
-
-public abstract class FactoryGroup : IAbstractFactory
+public class FactoryGroup : IFactoryGroup,IDisposable
 {
     private Dictionary<string,IFactory> _factoryGroup;
 
@@ -35,6 +20,10 @@ public abstract class FactoryGroup : IAbstractFactory
         _factoryGroup = new Dictionary<string, IFactory>();
     }
 
+    /// <summary>
+    /// KeyValuePair引数でFactoryを初期化するコンストラクタ
+    /// </summary>
+    /// <param name="factorys">可変長引数(何個も入れられるはず)</param>
     public FactoryGroup(params KeyValuePair<string,IFactory>[] factorys)
         : this()
     {
@@ -44,9 +33,15 @@ public abstract class FactoryGroup : IAbstractFactory
         }
     }
 
-    public FactoryGroup(Dictionary<string,IFactory> factorys)
+    public FactoryGroup(IList<KeyValuePair<string,IFactory>> factoryList)
+        : this(factoryList.ToArray())
     {
-        _factoryGroup = factorys;
+
+    }
+
+    ~FactoryGroup()
+    {
+        Dispose(false);
     }
 
     public void AddFactory(string name, IFactory factory)
@@ -55,7 +50,7 @@ public abstract class FactoryGroup : IAbstractFactory
         Error errorMsg = null;
 
         // 有効性チェック
-        if (!ValidationCheck(name,factory,out errorMsg))
+        if (!ValidationAddCheck(name,factory,out errorMsg))
         {
 #if UNITY_EDITOR
             UnityEngine.Debug.LogError(errorMsg.What());
@@ -70,7 +65,7 @@ public abstract class FactoryGroup : IAbstractFactory
 
     public IFactory GetFactory(string name)
     {
-                // 入力チェック
+        // 入力チェック
         if (string.IsNullOrEmpty(name))
         {
 #if UNITY_EDITOR
@@ -102,7 +97,31 @@ public abstract class FactoryGroup : IAbstractFactory
         }
     }
 
-        private bool ValidationCheck(string name, IFactory factory, out Error error)
+    public void Dispose()
+    {
+        Dispose(true);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            GC.SuppressFinalize(this);
+        }
+
+        // 既に解放されたら解放しない
+        if ((_factoryGroup == null) || (_factoryGroup.Count == 0))
+        {
+            return;
+        }
+        else
+        {
+            _factoryGroup.Clear();
+            _factoryGroup = null;
+        }
+    }
+
+    private bool ValidationAddCheck(string name, IFactory factory, out Error error)
     {
         error = null;
         // 名前のヌルチェック
@@ -129,11 +148,78 @@ public abstract class FactoryGroup : IAbstractFactory
             return false;
         }
 
-        // 安全性チェック完了
         return true;
     }
 }
-public sealed class ItemGenerator : MonoBehaviour
-{   
-    
+
+internal sealed class ItemGenerator : Singleton<ItemGenerator>,IMonoItemGenerator<ItemContainer>
+{
+    private FactoryGroup _itemFactorys;
+
+    public ItemGenerator()
+    {
+        _itemFactorys = new FactoryGroup(
+
+                        new KeyValuePair<string, IFactory>("Emerald",new EmeraldFactory()),
+                        new KeyValuePair<string, IFactory>("Ruby",new RubyFactory())
+
+                                        );
+    }
+    public ItemContainer GenerateSingleItem(string itemName)
+    {
+        IFactory foundFactory = _itemFactorys.GetFactory(itemName);
+
+        // 見つからなかったらnullを返す
+        if (foundFactory == null)
+        {
+            return null;
+        }
+
+        var product = foundFactory.GetProduct();
+
+        // ItemContainerかどうかを調べる
+        if (product is ItemContainer itemContainer)
+        {
+            return itemContainer;
+        }
+        else
+        {
+#if UNITY_EDITOR
+            Debug.LogError($"Product of {itemName} is not ItemContainer");
+#endif
+            return null;
+        }
+    }
+
+    public ItemContainer[] GenerateItems(string itemName,int generateNum)
+    {
+        IFactory foundFactory = _itemFactorys.GetFactory(itemName);
+
+        // 見つからなかったらnullを返す
+        if (foundFactory == null)
+        {
+            return null;
+        }
+
+        ItemContainer[] itemContainers = new ItemContainer[generateNum];
+
+        for (int i = 0; i < generateNum; ++i)
+        {
+            var product = foundFactory.GetProduct();
+
+            if (product is ItemContainer itemContainer)
+            {
+                itemContainers[i] = itemContainer;
+            }
+            else
+            {
+#if UNITY_EDITOR
+                Debug.LogError($"Product of {itemName} is not ItemContainer");
+#endif
+                itemContainers[i] = null;
+            }
+        }
+
+        return itemContainers;
+    }
 }

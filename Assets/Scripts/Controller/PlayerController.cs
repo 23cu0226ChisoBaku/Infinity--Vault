@@ -70,6 +70,12 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable
 
     private RaycastHit2D[] _hitInfoBuffer = new RaycastHit2D[3];
 
+    #region Player Ability (Experimental)
+
+    private PlayerAbility _ability;
+
+    #endregion
+    // End of PlayerAbility
     private void Awake()
     {
         // TODO
@@ -217,10 +223,7 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable
             }
         }
 
-        if (other.gameObject.TryGetComponent(out IPickable pickable))
-        {
-            pickable.OnPick(this);
-        }
+
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -243,6 +246,14 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable
         {
             _interactable.EndInteract();
             _interactable = null;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) 
+    {
+        if (other.gameObject.TryGetComponent(out IPickable pickable))
+        {
+            pickable.OnPick(this);
         }
     }
 

@@ -33,7 +33,7 @@ namespace MSingleton
                         {
                             GameObject singleton = new GameObject(typeof(T).Name);
                             _instance = singleton.AddComponent<T>();
-                            DontDestroyOnLoad(singleton);
+                            DontDestroyOnLoad(_instance);
                         }
                     }
                 }
@@ -46,6 +46,7 @@ namespace MSingleton
             if (_instance == null)
             {
                 _instance = this as T;
+                DontDestroyOnLoad(_instance);
             }
             else
             {

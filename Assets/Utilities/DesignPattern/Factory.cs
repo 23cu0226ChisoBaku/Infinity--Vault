@@ -1,3 +1,4 @@
+
 namespace MDesingPattern
 {
     namespace MFactory
@@ -11,10 +12,30 @@ namespace MDesingPattern
             IProduct GetProduct();
         }
 
-        public interface IAbstractFactory
+        public interface IFactoryGroup
         {
             IFactory GetFactory(string name);
             void AddFactory(string name, IFactory factory);
         }
+
+        #region Unity Mono Factory
+        public interface IMonoProduct
+        {
+            UnityEngine.GameObject gameObject {get;}
+            void InitMonoProduct();
+        }
+
+        public interface IMonoFactory
+        {
+            IMonoProduct GetMonoProduct();
+        }
+
+        public interface IMonoFactoryGroup
+        {
+            IMonoFactory GetMonoFactory(string name);
+            void AddMonoFactory(string name, IMonoFactory monoFactory);
+        }
+        #endregion
+        // End of Unity Mono Factory
     }
 }

@@ -92,6 +92,28 @@ public class VaultController : InteractableObj , IItemSettable
 
         if (_isOpened)
         {
+            // ÉAÉCÉeÉÄê∂ê¨
+            var items = ItemGenerator.Instance.GenerateItems("Ruby", 50);
+            foreach (var item in items)
+            {
+                if (item == null)
+                {
+                    continue;
+                }
+
+                item.transform.position = transform.position;
+                Rigidbody2D itemRigidbody = item.GetComponent<Rigidbody2D>();
+                if (itemRigidbody != null)
+                {
+                    itemRigidbody.excludeLayers |= LayerMask.GetMask("Pickable");
+                    var popAngel = Random.Range(30f,150f);
+                    var popPower = Random.Range(3,8);
+                    Vector2 popDirection = Quaternion.Euler(0,0,popAngel) * Vector2.right;
+                    itemRigidbody.AddForce(popDirection * popPower, ForceMode2D.Impulse);
+
+                }
+            }
+
             Destroy(gameObject);
         }
     }
@@ -100,7 +122,6 @@ public class VaultController : InteractableObj , IItemSettable
     {
         _puzzle.GetComponent<VaultPuzzleController>().UnregisterFinishEvent(OnPuzzleFinish);
         _isOpened = true;
-        Debug.LogError($"Drop Item: {_item.Name}");
 #if UNITY_EDITOR
         Debug.LogWarning($"Drop Item: {_item.Name}");
 #endif
