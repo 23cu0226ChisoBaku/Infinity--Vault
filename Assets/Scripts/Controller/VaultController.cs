@@ -110,7 +110,6 @@ public class VaultController : InteractableObj , IItemSettable
                     var popPower = Random.Range(3,8);
                     Vector2 popDirection = Quaternion.Euler(0,0,popAngel) * Vector2.right;
                     itemRigidbody.AddForce(popDirection * popPower, ForceMode2D.Impulse);
-
                 }
             }
 

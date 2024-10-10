@@ -38,6 +38,7 @@ internal class Navigator : INavigator
             return;
         }
 
+        // TODO need change
         Vector2 moveDir = (_destination - (Vector2)_navigatorUser.position).normalized;
         _navigatorUser.Translate(moveDir * rate * Time.deltaTime);
 
@@ -63,9 +64,9 @@ internal class Navigator : INavigator
         {
             if (_navigatorUser == null)
             {
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
                 Debug.LogWarning("Navigator is not initialized");
-    #endif
+#endif
                 return false;
             }
 

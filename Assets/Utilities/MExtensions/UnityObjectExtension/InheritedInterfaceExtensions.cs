@@ -1,4 +1,3 @@
-
 public static class UnityObjectInheritedInterfaceExtensions
 {
     public static bool IsAlive<T>(this T Interface) where T: class

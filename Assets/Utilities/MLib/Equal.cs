@@ -30,12 +30,12 @@ namespace MLib
         {
             if (typeof(T) == typeof(float))
             {
-                const float EPSILON = 0.00001f;
+                const float EPSILON = 1E-05f;
                 return System.Math.Abs((float)(object)a - (float)(object)b) < EPSILON ;
             }
             else if (typeof(T) == typeof(double))
             {
-                const double EPSILON = 0.00001f;
+                const double EPSILON = 1E-10f;
                 return System.Math.Abs((double)(object)a - (double)(object)b) < EPSILON;
             }
             else
