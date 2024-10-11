@@ -2,7 +2,7 @@ using UnityEngine;
 
 internal class GiantVaultController : InteractableObj
 {
-    public override void BeginInteract()
+    public override void ActiveInteract()
     {
         throw new System.NotImplementedException();
     }

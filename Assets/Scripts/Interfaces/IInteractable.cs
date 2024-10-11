@@ -8,8 +8,21 @@ public struct InteractTargetInfo
 }
 internal interface IInteractable
 {
+    /// <summary>
+    /// ‘€ìæ‚Ìî•ñ‚ğæ“¾‚·‚é
+    /// </summary>
+    /// <returns></returns>
     InteractTargetInfo GetTargetInfo();
-    void BeginInteract();
+    /// <summary>
+    /// ‘€ì‚ª‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½‚çŒÄ‚Ño‚·
+    /// </summary>
+    void ActiveInteract();
+    /// <summary>
+    /// ‘€ì‚ğ‚·‚é
+    /// </summary>
     void DoInteract();
+    /// <summary>
+    /// ‘€ì‚ğI—¹‚·‚é
+    /// </summary>
     void EndInteract();
 }

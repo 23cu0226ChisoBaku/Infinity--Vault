@@ -27,7 +27,7 @@ public class VaultController : InteractableObj , IItemSettable
         _isOpened = false;
     }
     
-    public override void BeginInteract()
+    public override void ActiveInteract()
     {
         if (_infoMessageUI == null)
         {

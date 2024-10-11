@@ -15,11 +15,10 @@ public class AbilityController : MonoBehaviour
         {
             _ability?.ActiveAbility();
         }
-
     }    
 
     private void OnDestroy()
     {
-        _ability?.Dispose();
+        
     }
 }

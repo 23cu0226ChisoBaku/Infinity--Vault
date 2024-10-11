@@ -214,23 +214,6 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable,ICanC
 #endif
         }
     }
-    
-    public void GetItem(ItemInfo item)
-    {
-        switch(item.Type)
-        {
-            case EItemType.Worth:
-            {
-                PlayerModel model = GetComponent<PlayerModel>();
-                model.AddWealth(100);
-            }
-            break;
-            default:
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-    }
 
     public Transform GetTransform()
     {
@@ -251,6 +234,22 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable,ICanC
         _rigidbody2D.excludeLayers &= ~LayerMask.GetMask("Ground"); 
         _isClimbing = false;
     }
+    
+    public void GetItem(GemContainer gem)
+    {
+        PlayerModel playerModel = GetComponent<PlayerModel>();
+        playerModel.AddWealth(gem.Worth);
+    }
+
+    public void GetItem(KeyItemContainer keyItem)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void GetItem(ConsumeItemContainer consumeItem)
+    {
+        throw new System.NotImplementedException();
+    }
 #endregion Interface
 // end of Interface
 
@@ -262,7 +261,7 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable,ICanC
         {
             if (other.gameObject.TryGetComponent(out _interactable))
             {
-                _interactable.BeginInteract();
+                _interactable.ActiveInteract();
             }
         }
 
@@ -321,11 +320,12 @@ public class PlayerController : MonoBehaviour,IParametrizable,IItemGetable,ICanC
                            );  
         }
     }
-#endif
-// DrawGizmos
 
-#endregion Unity Message
-// End of Unity Message
+#endif
+    // DrawGizmos
+
+    #endregion Unity Message
+    // End of Unity Message
 
 
 }

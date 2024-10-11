@@ -13,20 +13,19 @@ public struct ItemInfo
     public EItemType Type;
 
 }
-
-public struct GemInfo
-{
-
-}
-
 internal interface IItem
 {
 
 }
 
+/// <summary>
+/// Visitor Pattern
+/// </summary>
 public interface IItemGetable
 {
-    void GetItem(ItemInfo item);
+    void GetItem(GemContainer gem);
+    void GetItem(KeyItemContainer keyItem);
+    void GetItem(ConsumeItemContainer consumeItem);
 }
 
 internal interface IItemSettable

@@ -5,9 +5,19 @@ using UnityEngine.Assertions;
 internal interface ICanClimb
 {
     public Transform GetTransform();
+    /// <summary>
+    /// 登る/降りるオブジェクトのコライダーの高さ(2D:Y)
+    /// </summary>
     public float Collider2DHeight {get;}
     public float Collider2DOffsetY {get;}
+
+    /// <summary>
+    /// オブジェクトが登り/降り始めるとき呼び出されるコールバック
+    /// </summary>
     public void OnStartClimb();
+    /// <summary>
+    /// オブジェクトが登り/降り終わるとき呼び出されるコールバック
+    /// </summary>
     public void OnEndClimb();  
 }
 
@@ -23,6 +33,8 @@ internal class LadderObject2D : MonoBehaviour,IClimbable
     private float _climbLength;
     private float _ladderTopPosY;
     private float _ladderBottomPosY;
+
+    // 今はしごを使っているオブジェクトのユニーク情報が入っているコンテナ
     private HashSet<int> _climbingObjects = new HashSet<int>();
     
     private void Awake()
@@ -54,6 +66,7 @@ internal class LadderObject2D : MonoBehaviour,IClimbable
         
         int instanceID = climbTransform.GetInstanceID();
 
+        // まだ使っていないオブジェクトの情報を登録
         if (!_climbingObjects.Contains(instanceID))
         {
             _climbingObjects.Add(instanceID);
@@ -66,8 +79,10 @@ internal class LadderObject2D : MonoBehaviour,IClimbable
         }
 
         // TODO
+        // オブジェクトを移動させる
         climbTransform.Translate(moveDir);
 
+        // 移動できる場所をはしごの範囲内に調整
         AdjustCanClimbPos(canClimb);
 
     }
@@ -86,6 +101,7 @@ internal class LadderObject2D : MonoBehaviour,IClimbable
             return 0f;
         }
 
+        // 利用オブジェクトのコライダー中心座標からはしごの一番下への距離
         float distanceToLadderBottom = (climbTransform.position.y + canClimb.Collider2DOffsetY - canClimb.Collider2DHeight * 0.5f) - _ladderBottomPosY;
 
         return distanceToLadderBottom / _climbLength;
@@ -103,22 +119,27 @@ internal class LadderObject2D : MonoBehaviour,IClimbable
             isClimbOver = true;
 
             var adjustPos = canClimb.GetTransform().position;
-            adjustPos.y = _ladderTopPosY;
+            adjustPos.y = _ladderTopPosY + canClimb.Collider2DHeight * 0.5f - canClimb.Collider2DOffsetY;
             canClimb.GetTransform().position = adjustPos;
         }
+        // 下っ端を超えたら下っ端まで調整
         else if (canClimbPosRate < LADDER_BOTTOM_ADJUSTMENT_RATE)
         {
             isClimbOver = true;
 
             var adjustPos = canClimb.GetTransform().position;
-            adjustPos.y = _ladderBottomPosY;
+            adjustPos.y = _ladderBottomPosY + canClimb.Collider2DHeight * 0.5f - canClimb.Collider2DOffsetY;
             canClimb.GetTransform().position = adjustPos;
         }
 
+        // 使い終わったら(一番上もしくは一番下に到達したら)
         if (isClimbOver)
         {
             canClimb.OnEndClimb();
+
+            // 今まで使っていたオブジェクトの情報を削除
             _climbingObjects.Remove(canClimb.GetTransform().GetInstanceID());
+
         }
         
     }

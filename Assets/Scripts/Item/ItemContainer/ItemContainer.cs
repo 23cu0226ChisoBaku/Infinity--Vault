@@ -3,8 +3,7 @@ using UnityEngine;
 
 public abstract class ItemContainer : MonoBehaviour, IPickable,IProduct
 {
-    protected Item _itemInstance;
-    public ItemInfo Info => _itemInstance.Info;
+    protected string _itemName = "ItemName_ItemType";
     public abstract void InitProduct();
     public abstract void OnPick(IItemGetable getable);
 }

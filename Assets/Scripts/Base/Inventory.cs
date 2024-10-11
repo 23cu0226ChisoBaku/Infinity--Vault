@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Infinity Vault Model
+// TODO
+// ‚Ü‚¾Žg‚Á‚Ä‚¢‚È‚¢
 namespace IV 
 {
     namespace Item
