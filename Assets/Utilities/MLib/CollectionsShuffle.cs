@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MLib
+namespace MLibrary
 {
     public static partial class MLib
     {

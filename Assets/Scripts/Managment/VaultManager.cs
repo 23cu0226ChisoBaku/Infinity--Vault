@@ -1,7 +1,7 @@
 using UnityEngine;
 using MSingleton;
 using System.Linq;
-using MLib;
+using MLibrary;
 
 public class VaultManager : SingletonMono<VaultManager>
 {

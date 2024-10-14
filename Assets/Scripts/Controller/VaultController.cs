@@ -3,17 +3,19 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class VaultController : InteractableObj , IItemSettable
+internal class VaultController : InteractableObj , IItemSettable
 {
     private readonly static string RESOURCES_MESSAGE_BOX_PATH = "Prefabs/GlobalMessageBox";
     private GameObject _messageBox;
     private TMP_Text _infoMessageUI;
     // TODO
     public GameObject PuzzlePrefab;
-    private GameObject _puzzle;
+    private GameObject _puzzleObj;
     private bool _isOpened;
 
     private ItemInfo _item;
+
+    private IPuzzle _puzzle;
 
     private void Awake()
     {
@@ -25,6 +27,9 @@ public class VaultController : InteractableObj , IItemSettable
         };
 
         _isOpened = false;
+
+        // TODO
+        _puzzle = null;
     }
     
     public override void ActiveInteract()
@@ -68,9 +73,9 @@ public class VaultController : InteractableObj , IItemSettable
     {
         if (PuzzlePrefab != null)
         {
-            _puzzle = Instantiate(PuzzlePrefab);
+            _puzzleObj = Instantiate(PuzzlePrefab);
 
-            var puzzleCtrl = _puzzle.GetComponent<VaultPuzzleController>();
+            var puzzleCtrl = _puzzleObj.GetComponent<VaultPuzzleController>();
 
             if (puzzleCtrl != null)
             {
@@ -84,11 +89,16 @@ public class VaultController : InteractableObj , IItemSettable
 
     public override void EndInteract()
     {
-        if (_puzzle != null)
+        if (_puzzleObj != null)
         {
-            Destroy(_puzzle);
+            _puzzle?.ResetPuzzle();
+            Destroy(_puzzleObj);
         }
-        _messageBox.SetActive(false);
+        
+        if (_messageBox.IsAlive())
+        {
+            _messageBox.SetActive(false);
+        }
 
         if (_isOpened)
         {
@@ -119,7 +129,7 @@ public class VaultController : InteractableObj , IItemSettable
 
     private void OnPuzzleFinish()
     {
-        _puzzle.GetComponent<VaultPuzzleController>().UnregisterFinishEvent(OnPuzzleFinish);
+        _puzzleObj.GetComponent<VaultPuzzleController>().UnregisterFinishEvent(OnPuzzleFinish);
         _isOpened = true;
 #if UNITY_EDITOR
         Debug.LogWarning($"Drop Item: {_item.Name}");
@@ -137,5 +147,11 @@ public class VaultController : InteractableObj , IItemSettable
     public void SetItem(ItemInfo item)
     {
         _item = item;
+    }
+
+    public void InitVault(ItemInfo item, IPuzzle puzzle)
+    {
+        _item = item;
+        _puzzle = puzzle;
     }
 }

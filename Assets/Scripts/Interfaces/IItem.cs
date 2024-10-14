@@ -32,8 +32,3 @@ internal interface IItemSettable
 {
     void SetItem(ItemInfo item);
 }
-
-internal interface IItemContainer : IItemGetable, IItemSettable
-{
- 
-}

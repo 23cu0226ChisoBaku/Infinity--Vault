@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using MLib;
+using MLibrary;
 
 public class VaultPuzzleController : MonoBehaviour
 {

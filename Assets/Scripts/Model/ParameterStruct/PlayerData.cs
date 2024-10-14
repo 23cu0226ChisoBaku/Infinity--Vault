@@ -1,4 +1,4 @@
-public struct CharaParam
+public struct PlayerData
 {
     public float MoveSpeed;
     public float ClimbSpeed;

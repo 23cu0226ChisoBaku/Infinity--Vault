@@ -13,6 +13,7 @@ public interface IAbility
     public void ActiveAbility();
     public void FinishAbility();
     public void CooldownAbility(float deltaTime);
+    public bool IsCoolingDown();
     
 }
 
@@ -107,5 +108,10 @@ public class PlayerAbility : IAbility
                 OnCooldown?.Invoke(cooldownRate);
             }
         }
+    }
+
+    public bool IsCoolingDown()
+    {
+        throw new NotImplementedException();
     }
 }

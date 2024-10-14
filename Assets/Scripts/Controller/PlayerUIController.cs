@@ -1,11 +1,14 @@
 using UnityEngine;
 using MDesingPattern.MMediator;
 using TMPro;
+using UnityEditor.Rendering;
 
-public class PlayerUIController :MonoBehaviour, IMediator<PlayerModel, IPlayerUIInfo>
+
+public class PlayerUIController :MonoBehaviour, IMediator<PlayerModelContainer, IPlayerUIMessage>
 {
     public TMP_Text _wealthPanel;
-    void IMediator<PlayerModel, IPlayerUIInfo>.Notify(PlayerModel sender, IPlayerUIInfo message)
+
+    void IMediator<PlayerModelContainer, IPlayerUIMessage>.Notify(PlayerModelContainer sender, IPlayerUIMessage message)
     {
         if (!message.IsAlive())
         {
@@ -13,7 +16,8 @@ public class PlayerUIController :MonoBehaviour, IMediator<PlayerModel, IPlayerUI
         }
         if (_wealthPanel.IsActive())
         {
-            _wealthPanel.text = message.Wealth.ToString();
+            _wealthPanel.text = message.GetWealth().ToString();
         }
     }
+
 }

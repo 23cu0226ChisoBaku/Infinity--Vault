@@ -1,4 +1,4 @@
-namespace MLib
+namespace MLibrary
 {
 
     public static partial class MLib
