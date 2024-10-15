@@ -1,6 +1,7 @@
 using System;
 using MDesingPattern.MFactory;
 using MSingleton;
+using UnityEngine;
 
 /// <summary>
 /// パズルの難易度
@@ -26,35 +27,39 @@ public enum EDialPuzzleType
 }
 internal interface IPuzzleGenerator
 {
-  IButtonPuzzleUpdater GenerateButtonPuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType);
-  IDialPuzzle GenerateDialPuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType);
+  IPuzzle GenerateButtonPuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType);
+  IPuzzle GenerateDialPuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType);
 }
 /// <summary>
 /// パズルを生成するクラス
 /// </summary>
 public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
 {
-  private IFactory<RotateDialPuzzle> _rotateDialPuzzle;
-  private IFactory<DigitDialPuzzle> _digitDialPuzzle;
+  private IFactory<GameObject> _rotateDialPuzzle;
+  private IFactory<GameObject> _digitDialPuzzle;
 
   public PuzzleGenerator()
   {
-    _rotateDialPuzzle = new RotateDialPuzzleFactory(() => { return new RotateDialPuzzle();});
+    var rotateDialPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/RotateDialPuzzle");
+    var digitDialPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/DigitDialPuzzle");
+    _rotateDialPuzzle = new RotateDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(rotateDialPuzzlePrefab);});
+    _digitDialPuzzle = new DigitDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(digitDialPuzzlePrefab);});
   }
 
-  IButtonPuzzleUpdater IPuzzleGenerator.GenerateButtonPuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
+  IPuzzle IPuzzleGenerator.GenerateButtonPuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
   {
     throw new NotImplementedException();
   }
 
-  IDialPuzzle IPuzzleGenerator.GenerateDialPuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType)
+  IPuzzle IPuzzleGenerator.GenerateDialPuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType)
   {
-    return dialPuzzleType switch
-    {
-      EDialPuzzleType.Rotate      => _rotateDialPuzzle.GetProduct().SetDifficulty(difficulty),
-      EDialPuzzleType.DigitCombi  => _digitDialPuzzle.GetProduct().SetDifficulty(difficulty),
-      _                           => throw new ArgumentException(message : $"invalid Dial Puzzle Type"),
-    };
+    // return dialPuzzleType switch
+    // {
+    //   EDialPuzzleType.Rotate      => _rotateDialPuzzle.GetProduct().GetComponent<RotateDialPuzzleController>().AcceptDifficulty(difficulty),
+    //   EDialPuzzleType.DigitCombi  => _digitDialPuzzle.GetProduct().GetComponent<DigitDialPuzzleController>().AcceptDifficulty(difficulty),
+    //   _                           => throw new ArgumentException(message : $"invalid Dial Puzzle Type"),
+    // };
+    return null;
   }
 }
 

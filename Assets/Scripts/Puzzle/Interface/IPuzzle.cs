@@ -2,40 +2,28 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// ƒpƒYƒ‹ƒCƒ“ƒ^[ƒtƒF[ƒX
+/// ãƒ‘ã‚ºãƒ«ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 /// </summary>
 internal interface IPuzzle
 {
   /// <summary>
-  /// ƒpƒYƒ‹‚ğ•\¦
+  /// ãƒ‘ã‚ºãƒ«ã‚’è¡¨ç¤ºã™ã‚‹
   /// </summary>
   public void ShowPuzzle();
   /// <summary>
-  /// ƒpƒYƒ‹‚ğ‰B‚·
+  /// ãƒ‘ã‚ºãƒ«ã‚’éš ã™
   /// </summary>
   public void HidePuzzle();
   /// <summary>
-  /// ƒpƒYƒ‹‚ğƒŠƒZƒbƒg
+  /// ãƒ‘ã‚ºãƒ«ã‚’ãƒªã‚»ãƒƒãƒˆã™ã‚‹
   /// </summary>
   public void ResetPuzzle();
   /// <summary>
-  /// ƒpƒYƒ‹‚ª‰ğ‚©‚ê‚½‚çŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒN
+  /// ãƒ‘ã‚ºãƒ«æ›´æ–°å‡¦ç†ã‚’ã™ã‚‹
   /// </summary>
-  public event Action OnPuzzleClear;   
-}
-
-internal interface IDialPuzzle : IPuzzle
-{
-  public void InitTargetGameObject(GameObject targetGameObject);
+  public void UpdatePuzzle();
   /// <summary>
-  /// ƒ_ƒCƒ„ƒ‹ù‚ğXV‚·‚é
+  /// ãƒ‘ã‚ºãƒ«ãŒã‚¯ãƒªã‚¢ã—ãŸã¨ãã®ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ç™»éŒ²ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
   /// </summary>
-  /// <param name="startPos">‘€ìƒJ[ƒ\ƒ‹‚Ìn“_À•W(ƒ[ƒ‹ƒhÀ•W)</param>
-  /// <param name="endPos">‘€ìƒJ[ƒ\ƒ‹‚ÌI“_À•W(ƒ[ƒ‹ƒhÀ•W)</param>
-  public void UpdateDial(Vector2 startPos, Vector2 endPos);
-}
-
-internal interface IButtonPuzzleUpdater : IPuzzle
-{
-  public void UpdateClick();
+  public event Action OnPuzzleClear;
 }

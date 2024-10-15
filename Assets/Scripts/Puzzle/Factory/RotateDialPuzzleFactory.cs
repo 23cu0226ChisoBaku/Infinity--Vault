@@ -1,14 +1,15 @@
 using System;
 using MDesingPattern.MFactory;
+using UnityEngine;
 
-public class RotateDialPuzzleFactory : IFactory<RotateDialPuzzle>
+public class RotateDialPuzzleFactory : IFactory<GameObject>
 {
-  private event Func<RotateDialPuzzle> _rotateDialPuzzleFactory;
-  public RotateDialPuzzleFactory(Func<RotateDialPuzzle> factoryFunc)
+  private event Func<GameObject> _rotateDialPuzzleFactory;
+  public RotateDialPuzzleFactory(Func<GameObject> factoryFunc)
   {
     _rotateDialPuzzleFactory = factoryFunc;
   }
-  RotateDialPuzzle IFactory<RotateDialPuzzle>.GetProduct()
+  GameObject IFactory<GameObject>.GetProduct()
   {
     return _rotateDialPuzzleFactory?.Invoke();
   }

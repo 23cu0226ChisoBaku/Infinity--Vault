@@ -5,46 +5,40 @@ using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 /// <summary>
-/// パズルの難易度設定クラス
-/// TODO Strategy Patternで
+/// 繝代ぜ繝ｫ縺ｮ髮｣譏灘ｺｦ險ｭ螳夐未謨ｰ繧貞叙蠕励☆繧九け繝ｩ繧ｹ
+/// TODO Strategy Pattern
 /// </summary>
 public static class PuzzleDifficultySetter
 {
   private readonly static IPuzzleDifficultySetter EASY_PUZZLE_SETTER = new EasyPuzzleSetter(); 
   private readonly static IPuzzleDifficultySetter MEDIUM_PUZZLE_SETTER = new MediumPuzzleSetter(); 
   private readonly static IPuzzleDifficultySetter HARD_PUZZLE_SETTER = new HardPuzzleSetter(); 
-  public static RotateDialPuzzle SetDifficulty(this RotateDialPuzzle puzzle, EPuzzleDifficulty puzzleDifficulty)
-  {
-    return puzzleDifficulty switch
-    {
-      EPuzzleDifficulty.Easy    => EASY_PUZZLE_SETTER.SetDifficulty(puzzle),
-      EPuzzleDifficulty.Medium  => MEDIUM_PUZZLE_SETTER.SetDifficulty(puzzle),
-      EPuzzleDifficulty.Hard    => HARD_PUZZLE_SETTER.SetDifficulty(puzzle),
-      _                         => throw new ArgumentException($"{puzzle.GetType()} invalid Difficulty"),
-    };
-  }
 
-  public static DigitDialPuzzle SetDifficulty(this DigitDialPuzzle puzzle, EPuzzleDifficulty puzzleDifficulty)
+  public static IPuzzleDifficultySetter GetDifficultySetter(EPuzzleDifficulty difficulty)
   {
-    return puzzleDifficulty switch
+    return difficulty switch
     {
-      EPuzzleDifficulty.Easy    => EASY_PUZZLE_SETTER.SetDifficulty(puzzle),
-      EPuzzleDifficulty.Medium  => MEDIUM_PUZZLE_SETTER.SetDifficulty(puzzle),
-      EPuzzleDifficulty.Hard    => HARD_PUZZLE_SETTER.SetDifficulty(puzzle),
-      _                         => throw new ArgumentException($"{puzzle.GetType()} invalid Difficulty"),
+      EPuzzleDifficulty.Easy    => EASY_PUZZLE_SETTER,
+      EPuzzleDifficulty.Medium  => MEDIUM_PUZZLE_SETTER,
+      EPuzzleDifficulty.Hard    => HARD_PUZZLE_SETTER,
+      _                         => throw new ArgumentException("Invalid Puzzle Difficulty"),
     };
   }
 }
 
+/// <summary>
+/// 髮｣譏灘ｺｦ險ｭ螳壹ｒ陦後≧繧ｯ繝ｩ繧ｹ
+/// Visitor Pattern
+/// </summary>
 public interface IPuzzleDifficultySetter
 {
-  public RotateDialPuzzle SetDifficulty(RotateDialPuzzle puzzle);
-  public DigitDialPuzzle SetDifficulty(DigitDialPuzzle puzzle);
+  public RotateDialPuzzleController SetDifficulty(RotateDialPuzzleController puzzle);
+  public DigitDialPuzzleController SetDifficulty(DigitDialPuzzleController puzzle);
 }
 
 public class EasyPuzzleSetter : IPuzzleDifficultySetter
 {
-  RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
+  RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
   {
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
@@ -54,7 +48,7 @@ public class EasyPuzzleSetter : IPuzzleDifficultySetter
 
     return puzzle;
   }
-  DigitDialPuzzle IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzle puzzle)
+  DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
   {
       throw new System.NotImplementedException();
   }
@@ -62,7 +56,7 @@ public class EasyPuzzleSetter : IPuzzleDifficultySetter
 
 public class MediumPuzzleSetter : IPuzzleDifficultySetter
 {
-  RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
+  RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
   {
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
@@ -72,7 +66,7 @@ public class MediumPuzzleSetter : IPuzzleDifficultySetter
 
     return puzzle;
   }
-  DigitDialPuzzle IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzle puzzle)
+  DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
   {
       throw new System.NotImplementedException();
   }
@@ -80,7 +74,7 @@ public class MediumPuzzleSetter : IPuzzleDifficultySetter
 
 public class HardPuzzleSetter : IPuzzleDifficultySetter
 {
-  RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
+  RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
   {
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
@@ -90,7 +84,7 @@ public class HardPuzzleSetter : IPuzzleDifficultySetter
 
     return puzzle;
   }
-  DigitDialPuzzle IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzle puzzle)
+  DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
   {
       throw new System.NotImplementedException();
   }
