@@ -26,6 +26,7 @@ internal interface IPuzzle
 
 internal interface IDialPuzzle : IPuzzle
 {
+  public void InitTargetGameObject(GameObject targetGameObject);
   /// <summary>
   /// ダイヤル錠を更新する
   /// </summary>

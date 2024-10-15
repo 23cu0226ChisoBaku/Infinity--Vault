@@ -9,7 +9,7 @@ namespace MStateMachine
     // EState -> 列挙型(enum)
     // ---------------------------------------
     [Serializable]
-    public class State<EState> where EState : System.Enum
+    public abstract class State<EState> where EState : System.Enum
     {
         // ------------------------------
         // コンストラクタ

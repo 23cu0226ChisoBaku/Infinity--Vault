@@ -12,6 +12,11 @@ namespace MDesingPattern
             IProduct GetProduct();
         }
 
+        public interface IFactory<T>
+        {
+            T GetProduct();
+        }
+
         public interface IFactoryGroup
         {
             IFactory GetFactory(string name);

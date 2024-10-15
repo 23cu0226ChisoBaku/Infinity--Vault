@@ -141,8 +141,7 @@ public class PlayerController : MonoBehaviour, IItemGetable
 
     public void GetItem(GemContainer gem)
     {
-        PlayerModelContainer playerModel = GetComponent<PlayerModelContainer>();
-        playerModel.AddWealth(gem.Worth);
+        _playerModelContainer.AddWealth(gem.Worth);
     }
 
     public void GetItem(KeyItemContainer keyItem)

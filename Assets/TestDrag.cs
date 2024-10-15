@@ -2,30 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// TODO zŠÂQÆ‚É‚È‚é‰Â”\«‚ªHHH
+// TODO å¾ªç’°å‚ç…§ã«ãªã‚‹å¯èƒ½æ€§ãŒï¼Ÿ(gameObject <=> IDialPuzzle)
 public class TestDrag : MonoBehaviour
 {
   public Vector2 PreviousMousePos;
   public Vector2 CurrentMousePos;
   public bool IsDragging;
   public bool WaitDestroy;
-
-  public RotateDialPuzzle puzzleInfo;
-
-  private IDialPuzzle dialPuzzle;
+  private IDialPuzzle _dialPuzzle;
   // Start is called before the first frame update
   void Start()
   {
     Application.targetFrameRate = 60;
     WaitDestroy= false;
 
-    dialPuzzle = new DialPuzzle(gameObject,puzzleInfo);
-    dialPuzzle.OnPuzzleClear += () =>
+    IPuzzleGenerator generator = PuzzleGenerator.Instance;
+    _dialPuzzle = generator.GenerateDialPuzzle(EPuzzleDifficulty.Hard,EDialPuzzleType.Rotate);
+
+    _dialPuzzle.InitTargetGameObject(gameObject);
+    _dialPuzzle.OnPuzzleClear += () =>
     {
       WaitDestroy = true;
       IsDragging = false;
       Destroy(gameObject,5f);
-      dialPuzzle = null;
+      _dialPuzzle = null;
     };
   }
 
@@ -37,7 +37,7 @@ public class TestDrag : MonoBehaviour
       PreviousMousePos = CurrentMousePos;     
       CurrentMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
       
-      dialPuzzle?.UpdateDial(PreviousMousePos,CurrentMousePos);
+      _dialPuzzle?.UpdateDial(PreviousMousePos,CurrentMousePos);
     }
 
   }
@@ -50,6 +50,12 @@ public class TestDrag : MonoBehaviour
       Debug.Log("Dragging");
     }
   }
+
+  private void OnMouseDown() 
+  {
+    CurrentMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    PreviousMousePos = CurrentMousePos; 
+  }
   private void OnMouseUp()
   {
     if (!WaitDestroy)
@@ -58,4 +64,10 @@ public class TestDrag : MonoBehaviour
       Debug.Log("Exit Dragging");
     }
   }
+
+  internal void InitPuzzle(IDialPuzzle dialPuzzle)
+  {
+    _dialPuzzle = dialPuzzle;
+  }
+
 }
