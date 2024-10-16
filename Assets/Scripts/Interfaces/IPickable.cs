@@ -1,11 +1,11 @@
 /// <summary>
-/// E‚¦‚éƒIƒuƒWƒFƒNƒg
+/// æ‹¾ãˆã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 public interface IPickable
 {
-    /// <summary>
-    /// E‚ç‚ê‚é‚Æ‚«ŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒN
-    /// </summary>
-    /// <param name="getable"></param>
-    void OnPick(IItemGetable getable);
+  /// <summary>
+  /// æ‹¾ã‚ã‚ŒãŸã¨ãã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
+  /// </summary>
+  /// <param name="getable">ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ‹¾ãˆã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</param>
+  void OnPick(IItemGetable getable);
 }

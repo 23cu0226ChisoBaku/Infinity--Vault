@@ -61,3 +61,8 @@ public class VaultPuzzleController : MonoBehaviour
         _onFinish -= finishEvent;
     }
 }
+
+public class PuzzleController
+{
+    
+}

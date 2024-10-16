@@ -11,7 +11,7 @@ public class VaultManager : SingletonMono<VaultManager>
         
         itemContainers.Shuffle();
 
-        // KeyItem���Z�b�g
+        // KeyItemをそのうちの一個の容器に入れる
         itemContainers[0].SetItem(new ItemInfo { Name = "KeyItem"});
         for(int i = 1; i < itemContainers.Length; ++i)
         {

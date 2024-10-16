@@ -1,13 +1,20 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
+using System.Runtime.InteropServices;
 
-public interface ICanSetPuzzleDifficulty
+internal interface ICanSetPuzzleDifficulty
 {
-  void AcceptDifficulty(EPuzzleDifficulty difficulty);
+  /// <summary>
+  /// 難易度設定を行い、パズル(IPuzzle)を返す
+  /// </summary>
+  /// <param name="difficulty"></param>
+  /// <returns></returns>
+  IPuzzle AcceptDifficulty(EPuzzleDifficulty difficulty);
 }
-public sealed class RotateDialPuzzleController : Puzzle ,ICanSetPuzzleDifficulty
+internal sealed class RotateDialPuzzleController : Puzzle
 {
+  private const float MAX_ROTATE_SPEED = 1000f;
   private RotateDialPuzzleModel _dialPuzzleInfo; // ダイヤル錠パズルデータ
   private float _rotateAngle;                   // 回す度数(時計回りは正、反時計回りは負)
   private int _rotateRoundCnt;                  // 回す周数
@@ -19,7 +26,8 @@ public sealed class RotateDialPuzzleController : Puzzle ,ICanSetPuzzleDifficulty
 
   public override void HidePuzzle()
   {
-    base.HidePuzzle();
+    gameObject.SetActive(false);
+    IsPuzzleActive = false;
   }
 
   public override void ResetPuzzle()
@@ -28,14 +36,20 @@ public sealed class RotateDialPuzzleController : Puzzle ,ICanSetPuzzleDifficulty
   }
   public override void ShowPuzzle()
   {
-    base.HidePuzzle();
+    gameObject.SetActive(true);
+    IsPuzzleActive = true;
   }  
   public override void UpdatePuzzle()
   {
+    if (!IsPuzzleActive)
+    {
+      return;
+    }
+
     UpdateMouseMove();
 
     float inputMoveAngle = Vector2.SignedAngle(_previousMousePos - (Vector2)transform.position, _currentMousePos - (Vector2)transform.position);
-    var RotateSpeed = inputMoveAngle / 45f * 1000f;  
+    var RotateSpeed = inputMoveAngle / 45f * MAX_ROTATE_SPEED;  
     
     transform.Rotate(0,0,RotateSpeed * Time.deltaTime);
 
@@ -63,24 +77,25 @@ public sealed class RotateDialPuzzleController : Puzzle ,ICanSetPuzzleDifficulty
     if (_isDragging)
     {
       _previousMousePos = _currentMousePos;     
-      _currentMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      _currentMousePos = _currentMainCamera.ScreenToWorldPoint(Input.mousePosition);
     }
   }
 
   private void Awake()
   {
-    Application.targetFrameRate = 60;
     _isDragging = false;
 
     // IPuzzleGenerator generator = PuzzleGenerator.Instance;
     // _dialPuzzle = generator.GenerateDialPuzzle(EPuzzleDifficulty.Hard,EDialPuzzleType.Rotate);
-
+    _currentMainCamera = Camera.main;
     OnPuzzleClear += () =>
     {
       IsPuzzleCleared = true;
       _isDragging = false;
       Destroy(gameObject,5f);
     };
+
+    IsPuzzleActive = true;
   }
 
   private void OnMouseDrag() 
@@ -88,23 +103,41 @@ public sealed class RotateDialPuzzleController : Puzzle ,ICanSetPuzzleDifficulty
     if(!IsPuzzleCleared)
     {
       _isDragging = true;
-      Debug.Log("Dragging");
     }
   }
 
   private void OnMouseDown() 
   {
-    _currentMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    _currentMousePos = _currentMainCamera.ScreenToWorldPoint(Input.mousePosition);
     _previousMousePos = _currentMousePos; 
   }
   private void OnMouseUp()
   {
-      _isDragging = false;
-      Debug.Log("Exit Dragging");
+    ExitDrag();
   }
 
-  public override void AcceptDifficulty(EPuzzleDifficulty difficulty)
+  private void OnMouseExit() 
   {
-    PuzzleDifficultySetter.GetDifficultySetter(difficulty).SetDifficulty(this);
+    ExitDrag();
+  }
+
+  private void ExitDrag()
+  {
+    _isDragging = false;
+    ResetMouseMove();
+    Debug.Log("Exit Dragging");
+  }
+
+  private void ResetMouseMove()
+  {
+    _previousMousePos = Vector2.zero;
+    _currentMousePos = Vector2.zero;
+  }
+
+
+
+  public override IPuzzle AcceptDifficulty(EPuzzleDifficulty difficulty)
+  {
+    return PuzzleDifficultySetter.GetDifficultySetter(difficulty).SetDifficulty(this);
   }
 }

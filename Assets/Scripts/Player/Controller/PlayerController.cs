@@ -25,7 +25,6 @@ public class PlayerController : MonoBehaviour, IItemGetable
     private PhysicsMaterial2D _noFrictionMat;
     private PlayerModelContainer _playerModelContainer;
 
-    private bool _isClimbable;
     private IClimbable _climbable;
 
     // TODO
@@ -51,8 +50,6 @@ public class PlayerController : MonoBehaviour, IItemGetable
         // TODO
         // テストのため、プレイヤーをアイテムの生成にする
         VaultManager.Instance.InitItem();
-        
-        _isClimbable = false;
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
 
@@ -220,7 +217,7 @@ public class PlayerController : MonoBehaviour, IItemGetable
         {
             if (other.gameObject.TryGetComponent(out _climbable))
             {
-                _isClimbable = true;
+                
             }
         }
 
@@ -237,7 +234,6 @@ public class PlayerController : MonoBehaviour, IItemGetable
         if (other.gameObject.TryGetComponent(out _climbable))
         {
             _climbable = null;
-            _isClimbable = false;
         }
     }
 

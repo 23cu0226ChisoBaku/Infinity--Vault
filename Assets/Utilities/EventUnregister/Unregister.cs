@@ -94,6 +94,7 @@ namespace MEvent
     private event Action _eventHandler;
     public DisposableEvent()
     {
+      _eventHandler = null;
       _disposables = new List<IDisposable>();
     }
     public DisposableEvent(params Action[] handlers)

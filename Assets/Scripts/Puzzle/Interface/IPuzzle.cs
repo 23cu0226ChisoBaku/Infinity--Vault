@@ -4,7 +4,21 @@ using UnityEngine;
 /// <summary>
 /// パズルインターフェース
 /// </summary>
-internal interface IPuzzle
+internal interface IPuzzle : IPuzzleBase
+{
+  public GameObject GameObject{get;}
+
+  /// <summary>
+  /// パズル更新処理をする
+  /// </summary>
+  public void UpdatePuzzle();
+  /// <summary>
+  /// パズルがクリアしたときのコールバック登録インターフェース
+  /// </summary>
+  public event Action OnPuzzleClear;
+}
+
+internal interface IPuzzleBase
 {
   /// <summary>
   /// パズルを表示する
@@ -18,12 +32,4 @@ internal interface IPuzzle
   /// パズルをリセットする
   /// </summary>
   public void ResetPuzzle();
-  /// <summary>
-  /// パズル更新処理をする
-  /// </summary>
-  public void UpdatePuzzle();
-  /// <summary>
-  /// パズルがクリアしたときのコールバック登録インターフェース
-  /// </summary>
-  public event Action OnPuzzleClear;
 }

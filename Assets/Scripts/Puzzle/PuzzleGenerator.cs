@@ -1,4 +1,5 @@
 using System;
+using IV.Puzzle;
 using MDesingPattern.MFactory;
 using MSingleton;
 using UnityEngine;
@@ -27,39 +28,68 @@ public enum EDialPuzzleType
 }
 internal interface IPuzzleGenerator
 {
-  IPuzzle GenerateButtonPuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType);
-  IPuzzle GenerateDialPuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType);
+  IPuzzle GeneratePuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType);
+  IPuzzle GeneratePuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType);
+  IPuzzleButton GeneratePuzzleButton();
 }
 /// <summary>
 /// パズルを生成するクラス
 /// </summary>
 public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
 {
-  private IFactory<GameObject> _rotateDialPuzzle;
-  private IFactory<GameObject> _digitDialPuzzle;
+  private IFactory<GameObject> _rotateDialPuzzleFactory;
+  private IFactory<GameObject> _digitDialPuzzleFactory;
+  private IFactory<GameObject> _puzzleButtonFactory;
+  private IFactory<GameObject> _sequenceButtonPuzzleFactory;
 
   public PuzzleGenerator()
   {
     var rotateDialPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/RotateDialPuzzle");
     var digitDialPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/DigitDialPuzzle");
-    _rotateDialPuzzle = new RotateDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(rotateDialPuzzlePrefab);});
-    _digitDialPuzzle = new DigitDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(digitDialPuzzlePrefab);});
+    var puzzleButtonPrefab = Resources.Load<GameObject>("Prefabs/Puzzle/PuzzleButton");
+    var buttonPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/SequenceButtonPuzzle");
+    // TODO ファクトリーを見直す
+    _rotateDialPuzzleFactory = new RotateDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(rotateDialPuzzlePrefab);});
+    _digitDialPuzzleFactory = new DigitDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(digitDialPuzzlePrefab);});
+    _puzzleButtonFactory = new TemplateFactory(() => { return UnityEngine.Object.Instantiate(puzzleButtonPrefab);});
+    _sequenceButtonPuzzleFactory = new TemplateFactory(() => { return UnityEngine.Object.Instantiate(buttonPuzzlePrefab);});
   }
 
-  IPuzzle IPuzzleGenerator.GenerateButtonPuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
+  IPuzzle IPuzzleGenerator.GeneratePuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
   {
-    throw new NotImplementedException();
+    return buttonPuzzleType switch
+    {
+      EButtonPuzzleType.Sequence  => _sequenceButtonPuzzleFactory.GetProduct().GetComponent<ICanSetPuzzleDifficulty>().AcceptDifficulty(difficulty),
+      _                           => throw new ArgumentException(message : $"invalid Dial Puzzle Type"),
+    };
   }
 
-  IPuzzle IPuzzleGenerator.GenerateDialPuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType)
+  IPuzzle IPuzzleGenerator.GeneratePuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType)
   {
-    // return dialPuzzleType switch
-    // {
-    //   EDialPuzzleType.Rotate      => _rotateDialPuzzle.GetProduct().GetComponent<RotateDialPuzzleController>().AcceptDifficulty(difficulty),
-    //   EDialPuzzleType.DigitCombi  => _digitDialPuzzle.GetProduct().GetComponent<DigitDialPuzzleController>().AcceptDifficulty(difficulty),
-    //   _                           => throw new ArgumentException(message : $"invalid Dial Puzzle Type"),
-    // };
-    return null;
+    return dialPuzzleType switch
+    {
+      EDialPuzzleType.Rotate      => _rotateDialPuzzleFactory.GetProduct().GetComponent<ICanSetPuzzleDifficulty>().AcceptDifficulty(difficulty),
+      EDialPuzzleType.DigitCombi  => _digitDialPuzzleFactory.GetProduct().GetComponent<ICanSetPuzzleDifficulty>().AcceptDifficulty(difficulty),
+      _                           => throw new ArgumentException(message : $"invalid Dial Puzzle Type"),
+    };
+  }
+
+    IPuzzleButton IPuzzleGenerator.GeneratePuzzleButton()
+    {
+      return _puzzleButtonFactory.GetProduct().GetComponent<IPuzzleButton>();
+    }
+}
+
+public class TemplateFactory : IFactory<GameObject>
+{
+  private event Func<GameObject> _factory;
+  public TemplateFactory(Func<GameObject> factoryFunc)
+  {
+    _factory = factoryFunc;
+  }
+  GameObject IFactory<GameObject>.GetProduct()
+  {
+    return _factory?.Invoke();
   }
 }
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public sealed class DigitDialPuzzleController : Puzzle
+internal sealed class DigitDialPuzzleController : Puzzle
 {
   private RotateDialPuzzleModel _dialPuzzleInfo; // ダイヤル錠パズルデータ
   private float _rotateAngle;                   // 回す度数(時計回りは正、反時計回りは負)
@@ -14,7 +14,7 @@ public sealed class DigitDialPuzzleController : Puzzle
 
   public override void HidePuzzle()
   {
-    base.HidePuzzle();
+    
   }
 
   public override void ResetPuzzle()
@@ -23,7 +23,7 @@ public sealed class DigitDialPuzzleController : Puzzle
   }
   public override void ShowPuzzle()
   {
-    base.HidePuzzle();
+    
   }  
   public override void UpdatePuzzle()
   {
@@ -98,8 +98,8 @@ public sealed class DigitDialPuzzleController : Puzzle
       Debug.Log("Exit Dragging");
   }
 
-  public override void AcceptDifficulty(EPuzzleDifficulty difficulty)
+  public override IPuzzle AcceptDifficulty(EPuzzleDifficulty difficulty)
   {
-    PuzzleDifficultySetter.GetDifficultySetter(difficulty).SetDifficulty(this);
+    return PuzzleDifficultySetter.GetDifficultySetter(difficulty).SetDifficulty(this);
   }
 }

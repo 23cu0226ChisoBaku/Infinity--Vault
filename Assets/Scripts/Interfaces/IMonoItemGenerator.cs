@@ -2,17 +2,17 @@ using UnityEngine;
 internal interface IMonoItemGenerator<T> where T : MonoBehaviour
 {
     /// <summary>
-    /// –¼‘O‚ÅƒAƒCƒeƒ€‚ğæ“¾‚·‚é
+    /// ã‚¢ã‚¤ãƒ†ãƒ ã‚’å–å¾—
     /// </summary>
-    /// <param name="itemName">ƒAƒCƒeƒ€‚Ì–¼‘O</param>
-    /// <returns>ƒAƒCƒeƒ€ƒRƒ“ƒeƒi</returns>
+    /// <param name="itemName">ã‚¢ã‚¤ãƒ†ãƒ ã®åå‰</param>
+    /// <returns>ã‚¢ã‚¤ãƒ†ãƒ ã‚³ãƒ³ãƒ†ãƒŠ</returns>
     public T GenerateSingleItem(string itemName);
 
     /// <summary>
-    /// –¼‘O‚Åˆê’è‚Ì”‚ÌƒAƒCƒeƒ€‚ğ”z—ñ‚É“ü‚ê‚Ä•Ô‚·
+    /// ä¸€å®šã®æ•°ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’é…åˆ—ã«å…¥ã‚Œã¦è¿”ã™
     /// </summary>
-    /// <param name="itemName">ƒAƒCƒeƒ€‚Ì–¼‘O</param>
-    /// <param name="generateNum">¶¬‚·‚é”</param>
-    /// <returns>ƒAƒCƒeƒ€ƒRƒ“ƒeƒi‚Ì”z—ñ</returns>
-    public T[] GenerateItems(string itemName,int generateNum);
+    /// <param name="itemName">ã‚¢ã‚¤ãƒ†ãƒ ã®åå‰</param>
+    /// <param name="generateNum">ç”Ÿæˆã™ã‚‹æ•°</param>
+    /// <returns>ã‚¢ã‚¤ãƒ†ãƒ ã‚³ãƒ³ãƒ†ãƒŠã®é…åˆ—</returns>
+    public T[] GenerateItems(string itemName, int generateNum);
 }

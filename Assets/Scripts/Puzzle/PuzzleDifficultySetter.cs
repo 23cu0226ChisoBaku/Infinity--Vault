@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 /// パズルの難易度設定関数を取得するクラス
 /// TODO Strategy Pattern
 /// </summary>
-public static class PuzzleDifficultySetter
+internal static class PuzzleDifficultySetter
 {
   private readonly static IPuzzleDifficultySetter EASY_PUZZLE_SETTER = new EasyPuzzleSetter(); 
   private readonly static IPuzzleDifficultySetter MEDIUM_PUZZLE_SETTER = new MediumPuzzleSetter(); 
@@ -30,12 +30,16 @@ public static class PuzzleDifficultySetter
 /// 難易度設定を行うクラス
 /// Visitor Pattern
 /// </summary>
-public interface IPuzzleDifficultySetter
+internal interface IPuzzleDifficultySetter
 {
   public RotateDialPuzzleController SetDifficulty(RotateDialPuzzleController puzzle);
   public DigitDialPuzzleController SetDifficulty(DigitDialPuzzleController puzzle);
+  public SequenceButtonPuzzleController SetDifficulty(SequenceButtonPuzzleController puzzle);
 }
 
+/// <summary>
+/// 難易度設定簡単
+/// </summary>
 public class EasyPuzzleSetter : IPuzzleDifficultySetter
 {
   RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
@@ -51,6 +55,16 @@ public class EasyPuzzleSetter : IPuzzleDifficultySetter
   DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
   {
       throw new System.NotImplementedException();
+  }
+
+  SequenceButtonPuzzleController IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzleController puzzle)
+  {
+    SequenceButtonPuzzleInfo puzzleInfo = new SequenceButtonPuzzleInfo();
+    puzzleInfo.ButtonCnt = 3;
+
+    puzzle.InitInfo(puzzleInfo);
+
+    return puzzle;
   }
 }
 
@@ -70,6 +84,16 @@ public class MediumPuzzleSetter : IPuzzleDifficultySetter
   {
       throw new System.NotImplementedException();
   }
+
+  SequenceButtonPuzzleController IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzleController puzzle)
+  {
+    SequenceButtonPuzzleInfo puzzleInfo = new SequenceButtonPuzzleInfo();
+    puzzleInfo.ButtonCnt = 4;
+
+    puzzle.InitInfo(puzzleInfo);
+
+    return puzzle;
+  }
 }
 
 public class HardPuzzleSetter : IPuzzleDifficultySetter
@@ -79,7 +103,7 @@ public class HardPuzzleSetter : IPuzzleDifficultySetter
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
     info.RotateDial = RotateDialPuzzleModel.ERotateDial.Clockwise;
-    info.Round = 4;
+    info.Round = 5;
     puzzle.InitInfo(info);
 
     return puzzle;
@@ -87,5 +111,15 @@ public class HardPuzzleSetter : IPuzzleDifficultySetter
   DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
   {
       throw new System.NotImplementedException();
+  }
+
+  SequenceButtonPuzzleController IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzleController puzzle)
+  {
+    SequenceButtonPuzzleInfo puzzleInfo = new SequenceButtonPuzzleInfo();
+    puzzleInfo.ButtonCnt = 7;
+
+    puzzle.InitInfo(puzzleInfo);
+
+    return puzzle;
   }
 }
