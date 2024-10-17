@@ -16,7 +16,7 @@ TagManager:
   - InteractUI
   - Pickable
   - Player
-  - 
+  - Puzzle
   - 
   - 
   - 
@@ -50,6 +50,9 @@ TagManager:
     locked: 0
   - name: FrontObj
     uniqueID: 1743652219
+    locked: 0
+  - name: Puzzle
+    uniqueID: 4195763087
     locked: 0
   - name: UI
     uniqueID: 2531755685

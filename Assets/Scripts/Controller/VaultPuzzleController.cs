@@ -7,7 +7,7 @@ using MLibrary;
 public class VaultPuzzleController : MonoBehaviour
 {
     private Button[] _buttons;
-    private event System.Action _onFinish;
+    private event Action _onFinish;
     private int _currentButtonIndex;
 
     private void Awake()
@@ -16,7 +16,7 @@ public class VaultPuzzleController : MonoBehaviour
 
         var childrenButton = GetComponentsInChildren<Button>();
         
-        // ŽqButton‚ðƒVƒƒƒbƒtƒ‹‚·‚é
+        // ï¿½qButtonï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½bï¿½tï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         childrenButton.Shuffle();
 
         _buttons = new Button[childrenButton.Length];
@@ -60,9 +60,4 @@ public class VaultPuzzleController : MonoBehaviour
     {
         _onFinish -= finishEvent;
     }
-}
-
-public class PuzzleController
-{
-    
 }

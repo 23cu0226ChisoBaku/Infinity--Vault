@@ -32,9 +32,9 @@ internal static class PuzzleDifficultySetter
 /// </summary>
 internal interface IPuzzleDifficultySetter
 {
-  public RotateDialPuzzleController SetDifficulty(RotateDialPuzzleController puzzle);
-  public DigitDialPuzzleController SetDifficulty(DigitDialPuzzleController puzzle);
-  public SequenceButtonPuzzleController SetDifficulty(SequenceButtonPuzzleController puzzle);
+  public RotateDialPuzzle SetDifficulty(RotateDialPuzzle puzzle);
+  public DigitDialPuzzle SetDifficulty(DigitDialPuzzle puzzle);
+  public SequenceButtonPuzzle SetDifficulty(SequenceButtonPuzzle puzzle);
 }
 
 /// <summary>
@@ -42,7 +42,7 @@ internal interface IPuzzleDifficultySetter
 /// </summary>
 public class EasyPuzzleSetter : IPuzzleDifficultySetter
 {
-  RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
+  RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
   {
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
@@ -52,12 +52,12 @@ public class EasyPuzzleSetter : IPuzzleDifficultySetter
 
     return puzzle;
   }
-  DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
+  DigitDialPuzzle IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzle puzzle)
   {
       throw new System.NotImplementedException();
   }
 
-  SequenceButtonPuzzleController IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzleController puzzle)
+  SequenceButtonPuzzle IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzle puzzle)
   {
     SequenceButtonPuzzleInfo puzzleInfo = new SequenceButtonPuzzleInfo();
     puzzleInfo.ButtonCnt = 3;
@@ -70,7 +70,7 @@ public class EasyPuzzleSetter : IPuzzleDifficultySetter
 
 public class MediumPuzzleSetter : IPuzzleDifficultySetter
 {
-  RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
+  RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
   {
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
@@ -80,15 +80,15 @@ public class MediumPuzzleSetter : IPuzzleDifficultySetter
 
     return puzzle;
   }
-  DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
+  DigitDialPuzzle IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzle puzzle)
   {
       throw new System.NotImplementedException();
   }
 
-  SequenceButtonPuzzleController IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzleController puzzle)
+  SequenceButtonPuzzle IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzle puzzle)
   {
     SequenceButtonPuzzleInfo puzzleInfo = new SequenceButtonPuzzleInfo();
-    puzzleInfo.ButtonCnt = 4;
+    puzzleInfo.ButtonCnt = 5;
 
     puzzle.InitInfo(puzzleInfo);
 
@@ -98,7 +98,7 @@ public class MediumPuzzleSetter : IPuzzleDifficultySetter
 
 public class HardPuzzleSetter : IPuzzleDifficultySetter
 {
-  RotateDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzleController puzzle)
+  RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
   {
     RotateDialPuzzleModel info = new RotateDialPuzzleModel();
 
@@ -108,12 +108,12 @@ public class HardPuzzleSetter : IPuzzleDifficultySetter
 
     return puzzle;
   }
-  DigitDialPuzzleController IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzleController puzzle)
+  DigitDialPuzzle IPuzzleDifficultySetter.SetDifficulty(DigitDialPuzzle puzzle)
   {
       throw new System.NotImplementedException();
   }
 
-  SequenceButtonPuzzleController IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzleController puzzle)
+  SequenceButtonPuzzle IPuzzleDifficultySetter.SetDifficulty(SequenceButtonPuzzle puzzle)
   {
     SequenceButtonPuzzleInfo puzzleInfo = new SequenceButtonPuzzleInfo();
     puzzleInfo.ButtonCnt = 7;

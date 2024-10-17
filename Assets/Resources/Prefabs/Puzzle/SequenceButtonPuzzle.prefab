@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8562064868277535095}
-  - component: {fileID: 81888620851102272}
-  m_Layer: 0
+  - component: {fileID: -5723684203509843312}
+  m_Layer: 10
   m_Name: SequenceButtonPuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &81888620851102272
+--- !u!114 &-5723684203509843312
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

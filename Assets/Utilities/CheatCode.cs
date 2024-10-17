@@ -18,7 +18,7 @@ public class CheatCode : MonoBehaviour
         {
             var player = FindAnyObjectByType<PlayerController>();
 
-            player.gameObject.transform.position = new Vector3(9.5f, -4f, 0f);
+            player.gameObject.transform.position = new Vector3(14f, -7f, 0f);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha0))

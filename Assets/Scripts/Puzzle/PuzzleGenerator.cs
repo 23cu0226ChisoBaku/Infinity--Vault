@@ -9,9 +9,10 @@ using UnityEngine;
 /// </summary>
 public enum EPuzzleDifficulty
 {
-  Easy = 1,
-  Medium = 2,
-  Hard = 3,
+  Easy = 0,
+  Medium,
+  Hard,
+  DifficultyCount,
 }
 
 // ボタンパズルの種類
@@ -60,7 +61,7 @@ public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
     return buttonPuzzleType switch
     {
       EButtonPuzzleType.Sequence  => _sequenceButtonPuzzleFactory.GetProduct().GetComponent<ICanSetPuzzleDifficulty>().AcceptDifficulty(difficulty),
-      _                           => throw new ArgumentException(message : $"invalid Dial Puzzle Type"),
+      _                           => throw new ArgumentException(message : $"invalid Button Puzzle Type"),
     };
   }
 

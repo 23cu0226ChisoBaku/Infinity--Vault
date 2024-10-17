@@ -6,19 +6,21 @@ using System.Runtime.InteropServices;
 internal interface ICanSetPuzzleDifficulty
 {
   /// <summary>
-  /// ��Փx�ݒ���s���A�p�Y��(IPuzzle)��Ԃ�
+  /// 難易度設定を行い、パズル(IPuzzle)を返す
   /// </summary>
   /// <param name="difficulty"></param>
   /// <returns></returns>
   IPuzzle AcceptDifficulty(EPuzzleDifficulty difficulty);
 }
-internal sealed class RotateDialPuzzleController : Puzzle
+internal sealed class RotateDialPuzzle : Puzzle
 {
-  private const float MAX_ROTATE_SPEED = 1000f;
-  private RotateDialPuzzleModel _dialPuzzleInfo; // �_�C�������p�Y���f�[�^
-  private float _rotateAngle;                   // �񂷓x��(���v���͐��A�����v���͕�)
-  private int _rotateRoundCnt;                  // �񂷎���
-  private float _targetAngle;                   // �䂪�����邽�߉񂷕K�v�̓x��
+  private const float MAX_ROTATE_SPEED = 270f;
+  private const float MAX_INPUT_ANGLE = 120f;
+
+  private RotateDialPuzzleModel _dialPuzzleInfo; // ダイヤル錠(回す)パズルデータ
+  private float _totalRotateAngle;                   // 回した角度の度数(Degree)(時計回りは正、反時計回りは負)
+  private int _rotateRoundCnt;                  // 何周回したカウンター
+  private float _targetAngle;                   // 謎を解くため回す必要がある度数(Degree)
   private bool _isDragging;
   private Vector2 _previousMousePos;
   private Vector2 _currentMousePos;
@@ -32,7 +34,8 @@ internal sealed class RotateDialPuzzleController : Puzzle
 
   public override void ResetPuzzle()
   {
-      _rotateAngle = 0f;
+    _totalRotateAngle = 0f;
+    gameObject.transform.rotation = Quaternion.identity;
   }
   public override void ShowPuzzle()
   {
@@ -49,14 +52,18 @@ internal sealed class RotateDialPuzzleController : Puzzle
     UpdateMouseMove();
 
     float inputMoveAngle = Vector2.SignedAngle(_previousMousePos - (Vector2)transform.position, _currentMousePos - (Vector2)transform.position);
-    var RotateSpeed = inputMoveAngle / 45f * MAX_ROTATE_SPEED;  
-    
-    transform.Rotate(0,0,RotateSpeed * Time.deltaTime);
 
-    _rotateAngle += -RotateSpeed * Time.deltaTime;
+    float maxInputAngleCurrentFrame = MAX_INPUT_ANGLE * Time.deltaTime;
+    inputMoveAngle = Mathf.Clamp(inputMoveAngle,-maxInputAngleCurrentFrame,maxInputAngleCurrentFrame);
 
+    var rotateAngle = inputMoveAngle / maxInputAngleCurrentFrame * MAX_ROTATE_SPEED * Time.deltaTime; 
+    transform.Rotate(0,0,rotateAngle);
+
+    _totalRotateAngle += -rotateAngle;
+
+    Debug.Log(_totalRotateAngle);
     // Strategy
-    if (_rotateAngle >= _targetAngle)
+    if (_totalRotateAngle >= _targetAngle)
     {
         var adjustRotate = transform.rotation;
         adjustRotate.z = - _targetAngle % 360f;
@@ -83,10 +90,9 @@ internal sealed class RotateDialPuzzleController : Puzzle
 
   private void Awake()
   {
+    transform.localPosition = Vector3.zero;
     _isDragging = false;
 
-    // IPuzzleGenerator generator = PuzzleGenerator.Instance;
-    // _dialPuzzle = generator.GenerateDialPuzzle(EPuzzleDifficulty.Hard,EDialPuzzleType.Rotate);
     _currentMainCamera = Camera.main;
     OnPuzzleClear += () =>
     {
@@ -95,7 +101,6 @@ internal sealed class RotateDialPuzzleController : Puzzle
       Destroy(gameObject,5f);
     };
 
-    IsPuzzleActive = true;
   }
 
   private void OnMouseDrag() 
@@ -134,10 +139,9 @@ internal sealed class RotateDialPuzzleController : Puzzle
     _currentMousePos = Vector2.zero;
   }
 
-
-
   public override IPuzzle AcceptDifficulty(EPuzzleDifficulty difficulty)
   {
     return PuzzleDifficultySetter.GetDifficultySetter(difficulty).SetDifficulty(this);
   }
+
 }

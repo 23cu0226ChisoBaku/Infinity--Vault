@@ -1,4 +1,3 @@
-using MStateMachine;
 using UnityEngine;
 
 namespace IV
@@ -7,31 +6,36 @@ namespace IV
     {
         internal sealed class PlayerAbilityState : PlayerState
         {
+            private Material playerMat;
             public PlayerAbilityState(PlayerContext context)
                 :base(context,PlayerStateMachine.EPlayerState.Ability)
             {
-
+                playerMat = null;
             }
 
             public override void EnterState()
             {
-                var renderers = _context.PlayerGameObject.GetComponentsInChildren<Renderer>();
-                foreach(var renderer in renderers)
+                if (playerMat == null)
                 {
-                    var color = renderer.sharedMaterial.color;
+                    Renderer renderer = _context.PlayerGameObject.GetComponentInChildren<Renderer>();
+                    playerMat = renderer.material;
+
+                    renderer.material = playerMat;
+                }
+                
+                {
+                    var color = playerMat.color;
                     color.a = 0.2f;
-                    renderer.sharedMaterial.color = color;
+                    playerMat.color = color;
                 }
             }
 
             public override void ExitState()
             {
-                var renderers = _context.PlayerGameObject.GetComponentsInChildren<Renderer>();
-                foreach(var renderer in renderers)
                 {
-                    var color = renderer.sharedMaterial.color;
+                    var color = playerMat.color;
                     color.a = 1f;
-                    renderer.sharedMaterial.color = color;
+                    playerMat.color = color;
                 }
             }
 
@@ -40,6 +44,14 @@ namespace IV
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     _context.PlayerController.GetAbility()?.FinishAbility();
+                }
+            }
+
+            ~PlayerAbilityState()
+            {
+                if (playerMat != null)
+                {
+                    Object.Destroy(playerMat);
                 }
             }
         }

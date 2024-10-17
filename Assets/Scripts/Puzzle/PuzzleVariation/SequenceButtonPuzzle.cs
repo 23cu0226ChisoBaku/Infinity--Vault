@@ -9,8 +9,9 @@ public struct SequenceButtonPuzzleInfo
   public int ButtonCnt;
 }
 
-internal class SequenceButtonPuzzleController : Puzzle
+internal class SequenceButtonPuzzle : Puzzle
 {
+
   private List<IPuzzleButton> _puzzleButtons;
   private SequenceButtonPuzzleInfo _info;
 
@@ -21,11 +22,16 @@ internal class SequenceButtonPuzzleController : Puzzle
 
   public override void HidePuzzle()
   {
-    throw new System.NotImplementedException();
+    foreach(var button in _puzzleButtons)
+    {
+      button.HidePuzzle();
+    }
+    gameObject.SetActive(false);
   }
 
   public override void ResetPuzzle()
   {
+    Debug.Log("ResetButton");
     ResetPuzzleImpl();
   }
 
@@ -35,6 +41,7 @@ internal class SequenceButtonPuzzleController : Puzzle
     {
       _puzzleButtons[0].ShowPuzzle();
     }
+    gameObject.SetActive(true);
   }
 
   public override void UpdatePuzzle()
@@ -73,6 +80,7 @@ internal class SequenceButtonPuzzleController : Puzzle
 
   private void Awake()
   {
+    transform.localPosition = Vector3.zero;
     _puzzleButtons = new List<IPuzzleButton>();
   }
 
@@ -82,7 +90,7 @@ internal class SequenceButtonPuzzleController : Puzzle
   private void ResetPuzzleImpl()
   {
     // Clearコールバックを削除
-    _onPuzzleClear.Dispose();
+    _onPuzzleClear.Unsubscribe(DisposeButtons);
 
     // ボタンをシャッフルする
     _puzzleButtons.Shuffle();
@@ -92,6 +100,7 @@ internal class SequenceButtonPuzzleController : Puzzle
     {
       var currentButton = _puzzleButtons[i];
       var nextButton = _puzzleButtons[i+1];
+      currentButton.ResetPuzzle();
       currentButton.OnClick += () => {
                                         currentButton.HidePuzzle();
                                         nextButton.ShowPuzzle();
@@ -99,6 +108,7 @@ internal class SequenceButtonPuzzleController : Puzzle
     }
 
     // 最後のボタンのイベントをバインド
+    _puzzleButtons[_info.ButtonCnt-1].ResetPuzzle();
     _puzzleButtons[_info.ButtonCnt-1].OnClick += () => {
                                                           _puzzleButtons[_info.ButtonCnt-1].HidePuzzle();
                                                           _onPuzzleClear?.Invoke();
@@ -107,14 +117,7 @@ internal class SequenceButtonPuzzleController : Puzzle
     TestSetPos();
 
     // パズルが解かれたら実行するイベントをバインド
-    _onPuzzleClear += () => {  foreach(var button in _puzzleButtons)
-                               {
-                                 if (button.IsAlive())
-                                 {
-                                   button.DisposeButton();
-                                 }
-                               }
-                            };
+    _onPuzzleClear += DisposeButtons;
   }
 
   private void TestSetPos()
@@ -125,6 +128,17 @@ internal class SequenceButtonPuzzleController : Puzzle
       if (button is PuzzleButton puzzleButton)
       {
         puzzleButton.transform.position = Vector2.right * test++;
+      }
+    }
+  }
+
+  private void DisposeButtons()
+  {
+    foreach(var button in _puzzleButtons)
+    {
+      if (button.IsAlive())
+      {
+        button.DisposeButton();
       }
     }
   }

@@ -1,12 +1,12 @@
 using UnityEngine;
 using System;
 
-internal sealed class DigitDialPuzzleController : Puzzle
+internal sealed class DigitDialPuzzle : Puzzle
 {
-  private RotateDialPuzzleModel _dialPuzzleInfo; // ƒ_ƒCƒ„ƒ‹ùƒpƒYƒ‹ƒf[ƒ^
-  private float _rotateAngle;                   // ‰ñ‚·“x”(Œv‰ñ‚è‚Í³A”½Œv‰ñ‚è‚Í•‰)
-  private int _rotateRoundCnt;                  // ‰ñ‚·ü”
-  private float _targetAngle;                   // “ä‚ª‰ğ‚¯‚é‚½‚ß‰ñ‚·•K—v‚Ì“x”
+  private RotateDialPuzzleModel _dialPuzzleInfo; // ï¿½_ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pï¿½Yï¿½ï¿½ï¿½fï¿½[ï¿½^
+  private float _rotateAngle;                   // ï¿½ñ‚·“xï¿½ï¿½(ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Íï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Í•ï¿½)
+  private int _rotateRoundCnt;                  // ï¿½ñ‚·ï¿½ï¿½ï¿½
+  private float _targetAngle;                   // ï¿½ä‚ªï¿½ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ß‰ñ‚·•Kï¿½vï¿½Ì“xï¿½ï¿½
   private bool _isDragging;
   private Vector2 _previousMousePos;
   private Vector2 _currentMousePos;

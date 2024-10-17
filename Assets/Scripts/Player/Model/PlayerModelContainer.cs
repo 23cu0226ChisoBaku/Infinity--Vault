@@ -69,7 +69,6 @@ public class PlayerModelContainer : MonoBehaviour,IMediatable<PlayerModelContain
         PLAYER_MODEL.OnChangeMoveSpeedValue += OnChangeMoveSpeedValue;
         PLAYER_MODEL.OnChangeClimbSpeedValue += OnChangeClimbSpeedValue;
         PLAYER_MODEL.OnChangeWealthValue += OnChangeWealthValue;
-
     }
 
     private void OnDisable() 
@@ -111,10 +110,6 @@ public class PlayerModelContainer : MonoBehaviour,IMediatable<PlayerModelContain
         Debug.Log($"Old Value: {oldValue}");
         Debug.Log($"New Value: {newValue}");
 #endif
-        if(MLibrary.MLib.IsEqual(oldValue,newValue))
-        {
-            return;
-        }
 
         if (_uiMediator.IsAlive())
         {

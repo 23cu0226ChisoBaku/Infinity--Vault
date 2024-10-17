@@ -6,6 +6,7 @@ using System;
 /// </summary>
 internal abstract class Puzzle : MonoBehaviour, IPuzzle,ICanSetPuzzleDifficulty
 {
+  private GameObject _puzzlePanel;
   protected DisposableEvent _onPuzzleClear = new DisposableEvent();
   public bool IsPuzzleCleared {get;protected set;}
   public bool IsPuzzleActive {get;protected set;}
@@ -29,7 +30,6 @@ internal abstract class Puzzle : MonoBehaviour, IPuzzle,ICanSetPuzzleDifficulty
   public abstract void UpdatePuzzle();
   protected virtual void OnDestroy() 
   {
-    Debug.LogWarning("HogeHoge");
     _onPuzzleClear.Dispose();
   }
 }

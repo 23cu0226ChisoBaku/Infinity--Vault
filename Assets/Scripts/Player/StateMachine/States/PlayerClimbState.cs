@@ -17,7 +17,7 @@ namespace IV
             }
             private int _playerClimbDir;
             private IClimbable _climbableObj;
-            private Vector2 _climbDirection;    // “o‚ê‚éƒIƒuƒWƒFƒNƒg‚Ìˆê”Ô‰º‚©‚çˆê”Ôã‚Ü‚Å‚Ì•ûŒüƒxƒNƒgƒ‹;
+            private Vector2 _climbDirection;    // ï¿½oï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½Ìˆï¿½Ô‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôï¿½Ü‚Å‚Ì•ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½;
 
             public PlayerClimbState(PlayerContext context)
                 :base(context,PlayerStateMachine.EPlayerState.Climb)
@@ -96,7 +96,7 @@ namespace IV
                 float canClimbPosRate = CalculateClimbRate();
 
                 bool isClimbOver = false;
-                // ã‚ğ’´‚¦‚½‚ç
+                // ï¿½ï¿½ğ’´‚ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (canClimbPosRate >= _climbableObj.ClimbTopRate)
                 {
                     isClimbOver = true;
@@ -114,7 +114,7 @@ namespace IV
 
                     _context.PlayerGameObject.transform.position = adjustPos;
                 }
-                // ‰º‚Á’[‚ğ’´‚¦‚½‚ç‰º‚Á’[‚Ü‚Å’²®
+                // ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ğ’´‚ï¿½ï¿½ï¿½ï¿½ç‰ºï¿½ï¿½ï¿½[ï¿½Ü‚Å’ï¿½ï¿½ï¿½
                 else if (canClimbPosRate < _climbableObj.ClimbBottomRate)
                 {
                     isClimbOver = true;
@@ -134,7 +134,7 @@ namespace IV
 
                 }
 
-                // g‚¢I‚í‚Á‚½‚ç(ˆê”Ôã‚à‚µ‚­‚Íˆê”Ô‰º‚É“’B‚µ‚½‚ç)
+                // ï¿½gï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ôï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íˆï¿½Ô‰ï¿½ï¿½É“ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
                 if (isClimbOver)
                 {
                     _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Walk);

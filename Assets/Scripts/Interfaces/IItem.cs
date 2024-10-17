@@ -1,5 +1,5 @@
 /// <summary>
-/// ƒAƒCƒeƒ€‚Ìî•ñ
+/// ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½Ìï¿½ï¿½
 /// </summary>
 public struct ItemInfo
 {
@@ -7,9 +7,16 @@ public struct ItemInfo
   public string Name;
 
 }
+
+public struct VaultInfo
+{
+  public EPuzzleDifficulty Difficulty;
+  public ItemInfo ItemInfo;
+  public int ItemCount;
+}
 /// <summary>
-/// ƒAƒCƒeƒ€‚ğæ“¾‚·‚é
-/// æ“¾‚·‚éƒAƒCƒeƒ€‚Ìí—Ş‚É‚æ‚Á‚Äˆ—‚ğ•ª—£‚³‚¹‚é
+/// ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
+/// ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½Ìï¿½Ş‚É‚ï¿½ï¿½ï¿½Äï¿½ï¿½ï¿½ï¿½ğ•ª—ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /// Visitor Pattern
 /// </summary>
 public interface IItemGetable

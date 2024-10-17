@@ -47,9 +47,6 @@ public class PlayerController : MonoBehaviour, IItemGetable
 #region Unity main loop message
     private void Awake()
     {
-        // TODO
-        // テストのため、プレイヤーをアイテムの生成にする
-        VaultManager.Instance.InitItem();
 
         _rigidbody2D = GetComponent<Rigidbody2D>();
 
@@ -83,13 +80,20 @@ public class PlayerController : MonoBehaviour, IItemGetable
                                                 _capsuleCollider.enabled = true;
                                             };
             _ability.OnCooldown += deltaTime => {
-                                                    Debug.Log(_ability.LeftCoolTime);
+                                                    // Debug.Log(_ability.LeftCoolTime);
                                                 };
             _ability.OnFinishCooldown += () =>  {
                                                     Debug.Log($"{_ability.AbilityName} Finish Cooldown");
                                                 };
         }
     }
+
+  private void Start()
+  {
+    // TODO
+    // テストのため、プレイヤーをアイテムの生成にする
+    VaultManager.Instance.InitItem();
+  }
     private void Update()
     {
         // アビリティクールダウン
@@ -108,17 +112,11 @@ public class PlayerController : MonoBehaviour, IItemGetable
             }
         }
 
-        Debug.Log(_playerStateMachine.CurrentState);
+        // Debug.Log(_playerStateMachine.CurrentState);
 
         _playerStateMachine.Update(Time.deltaTime);
 
     }
-
-    private void Test()
-    {
-        Debug.Log("HogeHoge");
-    }
-
     private void FixedUpdate() 
     {
         // var fallSpeed = _rigidbody2D.velocity.y < -10f ? -10f : _rigidbody2D.velocity.y;
@@ -160,6 +158,8 @@ public class PlayerController : MonoBehaviour, IItemGetable
 
     public IAbility GetAbility() => _ability;
 
+    // TODO
+    // 何故かプレイヤーが壁に近づいたら、離れるときIsGroundedが一瞬falseになってしまう
     public bool IsGrounded()
     {
         ContactFilter2D filter2D = new ContactFilter2D();
@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour, IItemGetable
                                     _groundHit2Ds, 
                                     _capsuleCollider.size.y * 0.5f + 0.01f
                                    );
-        
+
         if (rayHitCnt > 0)
         {
             return true;
@@ -262,9 +262,13 @@ public class PlayerController : MonoBehaviour, IItemGetable
         if(_capsuleCollider != null)
         {
             Gizmos.DrawLine(
-                                (Vector2)transform.position + _capsuleCollider.offset,
-                                (Vector2)transform.position + _capsuleCollider.offset + Vector2.down * _capsuleCollider.size.y * 0.5f + Vector2.down * 0.01f
-                           );  
+                                (Vector2)transform.position + _capsuleCollider.offset + _capsuleCollider.size.x * 0.5f * Vector2.right,
+                                (Vector2)transform.position + _capsuleCollider.offset + _capsuleCollider.size.x * 0.5f * Vector2.right + Vector2.down * _capsuleCollider.size.y * 0.5f + Vector2.down * 0.01f
+                           ); 
+            Gizmos.DrawLine(
+                                (Vector2)transform.position + _capsuleCollider.offset + _capsuleCollider.size.x * 0.5f * Vector2.left,
+                                (Vector2)transform.position + _capsuleCollider.offset + _capsuleCollider.size.x * 0.5f * Vector2.left + Vector2.down * _capsuleCollider.size.y * 0.5f + Vector2.down * 0.01f
+                            );   
         }
     }
 
