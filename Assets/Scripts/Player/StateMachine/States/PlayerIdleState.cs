@@ -10,7 +10,7 @@ namespace IV
             public PlayerIdleState(PlayerContext context)
                 :base(context,PlayerStateMachine.EPlayerState.Idle)
             {
-
+                ;;;
             }
 
             public override void EnterState()
