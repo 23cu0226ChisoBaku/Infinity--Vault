@@ -1,28 +1,40 @@
 using UnityEngine;
 
+/// <summary>
+/// æ“ä½œã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æƒ…å ±
+/// </summary>
 public struct InteractTargetInfo
 {
-    public string Name;
-    public KeyCode InteractKey;
-    public LayerMask Layer;
+  /// <summary>
+  /// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®åå‰
+  /// </summary>
+  public string Name;
+  /// <summary>
+  /// æ“ä½œã™ã‚‹ã¨ãä½¿ã†ã‚­ãƒ¼
+  /// </summary>
+  public KeyCode InteractKey;
+  /// <summary>
+  /// æ“ä½œã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¬ã‚¤ãƒ¤ãƒ¼(Unity Object Base)
+  /// </summary>
+  public LayerMask Layer;
 }
 internal interface IInteractable
 {
-    /// <summary>
-    /// ‘€ìæ‚Ìî•ñ‚ğæ“¾‚·‚é
-    /// </summary>
-    /// <returns></returns>
-    InteractTargetInfo GetTargetInfo();
-    /// <summary>
-    /// ‘€ì‚ª‚Å‚«‚é‚æ‚¤‚É‚È‚Á‚½‚çŒÄ‚Ño‚·
-    /// </summary>
-    void ActiveInteract();
-    /// <summary>
-    /// ‘€ì‚ğ‚·‚é
-    /// </summary>
-    void DoInteract();
-    /// <summary>
-    /// ‘€ì‚ğI—¹‚·‚é
-    /// </summary>
-    void EndInteract();
+  /// <summary>
+  /// æ“ä½œã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æƒ…å ±ã‚’å–å¾—
+  /// </summary>
+  /// <returns></returns>
+  InteractTargetInfo GetTargetInfo();
+  /// <summary>
+  /// æ“ä½œã§ãã‚‹çŠ¶æ…‹ã«ã™ã‚‹
+  /// </summary>
+  void ActiveInteract();
+  /// <summary>
+  /// æ“ä½œã™ã‚‹
+  /// </summary>
+  void DoInteract();
+  /// <summary>
+  /// æ“ä½œçµ‚äº†
+  /// </summary>
+  void EndInteract();
 }

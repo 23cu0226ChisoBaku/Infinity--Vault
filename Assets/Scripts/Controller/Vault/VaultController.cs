@@ -1,23 +1,38 @@
-using System.Linq;
+using System.Runtime.InteropServices;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public interface IVault
-{
-  public void InitVault(VaultInfo vaultInfo);
-}
+/// <summary>
+/// 金庫を初期化するインターフェース
+/// </summary>
 internal class VaultController : InteractableObj ,IVault
 {
+// TODO リファクタリングする予定部分
+#region Need Refactoring
+  /// <summary>
+  /// メッセージボックスのパス
+  /// </summary>
   private readonly static string RESOURCES_MESSAGE_BOX_PATH = "Prefabs/GlobalMessageBox";
+  /// <summary>
+  /// 生成したメッセージボックスオブジェクト
+  /// </summary>
   private GameObject _messageBox;
+  /// <summary>
+  /// メッセージボックスのテキスト部分
+  /// </summary>
   private TMP_Text _infoMessageUI;
-  private VaultInfo _vaultInfo;
+#endregion Need Refactoring
+// End of リファクタリングする予定部分
 
-  private IPuzzle _puzzle;
+// プライベートフィールド
+#region Private Field
+  private VaultInfo _vaultInfo;           // 金庫の情報
+  private IPuzzleController _puzzleCtrl;  // 金庫のパズルコントローラー 
+#endregion Private Field
+// End of プライベートフィールド
 
-  private IPuzzleController _puzzleCtrl;
-
+// Unityメインループメッセージ
+#region Unity Main Loop Message
   private void Awake()
   {
     _info = new InteractTargetInfo
@@ -26,15 +41,31 @@ internal class VaultController : InteractableObj ,IVault
         InteractKey = KeyCode.E,
         Layer = gameObject.layer,
     };
-    // TODO
-    _puzzle = null;
     _puzzleCtrl = null;
   }
+  private void OnDestroy() 
+  {
+
+    if (_messageBox.IsAlive())
+    {
+      Destroy(_messageBox);
+      Resources.UnloadUnusedAssets();
+    }
+  }
+#endregion Unity Main Loop Message
+// End of Unityメインループメッセージ
     
+#region Interface
+  // IInteractable実装部分
+#region IInteractable
   public override void ActiveInteract()
   {
+    // TODO リファクタリングする予定
+    #region Need Refactoring
+    // メッセージボックスを作成
     if (_infoMessageUI == null)
     {
+      // プレハブを取得
       var msgBoxPrefab = Resources.Load<GameObject>(RESOURCES_MESSAGE_BOX_PATH);
       if (msgBoxPrefab != null)
       {
@@ -42,14 +73,15 @@ internal class VaultController : InteractableObj ,IVault
 
         _infoMessageUI = _messageBox.GetComponent<TMP_Text>();
         
+        // メッセージボックスのテキストを設定
         _infoMessageUI.text = $"Press {_info.InteractKey.ToString()}";
-        _messageBox.SetActive(false);
 
         var interactUICanvasList = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
 
         bool isFound = false;
         foreach(var canvas in interactUICanvasList)
         {
+          // 特定のキャンパスに入れる
           if (canvas.gameObject.layer == LayerMask.NameToLayer("InteractUI"))
           {   
               _messageBox.transform.SetParent(canvas.transform);
@@ -64,60 +96,72 @@ internal class VaultController : InteractableObj ,IVault
         }
       }
     }
-
     _messageBox.SetActive(true);
+    #endregion Need Refactoring
+    // End of TODO リファクタリングする予定
   }
-
   public override void DoInteract()
   {
+    // パズルをアクティブにする
     _puzzleCtrl?.Active();
   
-    // ���b�Z�[�W���B���Ă���
-    _messageBox.SetActive(false);
-  }
-
-  public override void EndInteract()
-  {
-
-    _puzzle?.ResetPuzzle();
-    _puzzleCtrl?.Deactive();
-    
+    // メッセージボックスを隠す
     if (_messageBox.IsAlive())
     {
-        _messageBox.SetActive(false);
+      _messageBox.SetActive(false);
     }
-
-
   }
-
-  private void OnDestroy() 
+  public override void EndInteract()
   {
-    if (_messageBox != null)
+    if (_puzzleCtrl.IsActive)
     {
-      Destroy(_messageBox);
+      //  パズルを非アクティブにする
+      _puzzleCtrl?.Deactive();
+    }
+    
+    // メッセージボックスを隠す
+    if (_messageBox.IsAlive())
+    {
+      _messageBox.SetActive(false);
     }
   }
+  #endregion IInteractable
+  // End of IInteractable実装部分
 
-  public void InitVault(VaultInfo vaultInfo)
+  // IVault実装部分
+  #region IVault
+  void IVault.InitVault(VaultInfo vaultInfo)
   {
     _vaultInfo = vaultInfo;
     InitVaultImpl();
   }
+  #endregion IVault
+  // End of IVault実装部分
+#endregion Interface
+// End of Interface
 
+  /// <summary>
+  /// 金庫の初期化の内部実装部分
+  /// </summary>
   private void InitVaultImpl()
   {
     if (_puzzleCtrl == null)
     {
+      // パズルを初期化
       _puzzleCtrl = new PuzzleController();
       _puzzleCtrl.InitPuzzle(_vaultInfo.Difficulty);
       _puzzleCtrl.OnClear += OpenVault;
       _puzzleCtrl.Deactive();
     }
   }
-
+  /// <summary>
+  /// 金庫を開く
+  /// TODO リファクタリングする予定
+  /// </summary>
   private void OpenVault()
   {
-    // �A�C�e������
+    // TODO Need Refactoring
+    // アイテムを生成する
     var items = ItemGenerator.Instance.GenerateItems("Ruby", _vaultInfo.ItemCount);
     for(int i = 0; i < _vaultInfo.ItemCount; ++i)
     {
@@ -131,6 +175,7 @@ internal class VaultController : InteractableObj ,IVault
       item.transform.position = transform.position;
       Rigidbody2D itemRigidbody = item.GetComponent<Rigidbody2D>();
 
+      // アイテムを出す
       if (itemRigidbody != null)
       {
         itemRigidbody.excludeLayers |= LayerMask.GetMask("Pickable");
@@ -140,6 +185,8 @@ internal class VaultController : InteractableObj ,IVault
         itemRigidbody.AddForce(popDirection * popPower, ForceMode2D.Impulse);
       }
     }
+    _puzzleCtrl?.TermPuzzle();
+    
     Destroy(gameObject);
   }
 }

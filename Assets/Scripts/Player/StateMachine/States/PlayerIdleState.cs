@@ -15,7 +15,7 @@ namespace IV
 
             public override void EnterState()
             {
-                _context.PlayerRigidbody.gravityScale = 0f;
+                _context.PlayerRigidbody.gravityScale = 1f;
                 _context.PlayerRigidbody.velocity = Vector2.zero;
             }
 

@@ -74,10 +74,12 @@ public class PlayerController : MonoBehaviour, IItemGetable
             _ability.OnActiveAbility += () => {
                                                 _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Ability);
                                                 _capsuleCollider.enabled = false;
+                                                Debug.Log("On active ability");
                                             };
             _ability.OnFinishAbility += () => {
                                                 _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Idle);
                                                 _capsuleCollider.enabled = true;
+                                                Debug.Log("On finish ability");
                                             };
             _ability.OnCooldown += deltaTime => {
                                                     // Debug.Log(_ability.LeftCoolTime);
@@ -115,6 +117,11 @@ public class PlayerController : MonoBehaviour, IItemGetable
         // Debug.Log(_playerStateMachine.CurrentState);
 
         _playerStateMachine.Update(Time.deltaTime);
+
+        if (_climbable.IsAlive())
+        {
+            Debug.Log(_climbable.ClimbLength);
+        }
 
     }
     private void FixedUpdate() 
@@ -176,7 +183,7 @@ public class PlayerController : MonoBehaviour, IItemGetable
                                     Vector2.down, 
                                     filter2D, 
                                     _groundHit2Ds, 
-                                    _capsuleCollider.size.y * 0.5f + 0.01f
+                                    _capsuleCollider.size.y * 0.5f + 0.05f
                                    );
 
         // プレイヤーコライダー真ん中の右端から下へレイを飛ばす
@@ -185,9 +192,8 @@ public class PlayerController : MonoBehaviour, IItemGetable
                                     Vector2.down, 
                                     filter2D, 
                                     _groundHit2Ds, 
-                                    _capsuleCollider.size.y * 0.5f + 0.01f
+                                    _capsuleCollider.size.y * 0.5f + 0.05f
                                    );
-
         if (rayHitCnt > 0)
         {
             return true;

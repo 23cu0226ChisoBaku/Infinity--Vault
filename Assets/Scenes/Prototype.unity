@@ -4233,7 +4233,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -6354,7 +6354,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d4f08032eca34245801550e33e3029e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wealthPanel: {fileID: 274929258}
+  _wealthText: {fileID: 274929258}
 --- !u!4 &1887004505
 Transform:
   m_ObjectHideFlags: 0

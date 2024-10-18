@@ -1,34 +1,37 @@
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.Assertions;
 
-
-// TODO
-// ¡‚Í‚Í‚µ‚²‚µ‚©‚È‚¢‚Ì‚ÅA‚»‚êˆÈŠO‚Ì“o‚ê‚éƒIƒuƒWƒFƒNƒg‚ª‘z’è‚³‚ê‚Ä‚¢‚È‚¢İŒv‚É‚È‚Á‚Ä‚¢‚é
+/// <summary>
+/// ã¯ã—ã”(ä¸€ç•ªä¸Šã¨ä¸€ç•ªä¸‹ã¾ã§è¡Œã‘ã‚‹)
+/// </summary>
 internal class LadderObject2D : MonoBehaviour,IClimbable
-{
-    private static readonly float LADDER_BOTTOM_ADJUSTMENT_RATE = 0f;
-    private static readonly float LADDER_TOP_ADJUSTMENT_RATE = 1f;
-    private float _climbLength;
-    private Vector2 _ladderTopPos;
-    private Vector2 _ladderBottomPos;
-    float IClimbable.ClimbTopRate => LADDER_TOP_ADJUSTMENT_RATE;
-    float IClimbable.ClimbBottomRate => LADDER_BOTTOM_ADJUSTMENT_RATE;
+{ 
+  /// <summary>
+  /// ã¯ã—ã”ã®ä¸‹ã¸è¡Œã‘ã‚‹ã¨ã“ã‚(é•·ã•ã¨æ¯”ä¾‹ã—ã¦ã„ã‚‹)
+  /// </summary>
+  private static readonly float LADDER_BOTTOM_RATE = 0f;
+  /// <summary>
+  /// ã¯ã—ã”ã®ä¸Šã¸è¡Œã‘ã‚‹ã¨ã“ã‚(é•·ã•ã¨æ¯”ä¾‹ã—ã¦ã„ã‚‹)
+  /// </summary>
+  private static readonly float LADDER_TOP_RATE = 1f;
+  private float _ladderLength;
+  private Vector2 _ladderTopPos;
+  private Vector2 _ladderBottomPos;
+  float IClimbable.ClimbTopRate => LADDER_TOP_RATE;
+  float IClimbable.ClimbBottomRate => LADDER_BOTTOM_RATE;
+  Vector2 IClimbable.ClimbTopPos => _ladderTopPos;
+  Vector2 IClimbable.ClimbBottomPos => _ladderBottomPos;
+  float IClimbable.ClimbLength => _ladderLength;
 
-    Vector2 IClimbable.ClimbTopPos => _ladderTopPos;
-    Vector2 IClimbable.ClimbBottomPos => _ladderBottomPos;
-    float IClimbable.ClimbLength => _climbLength;
-
-    private void Awake()
-    {
-        var collider = GetComponent<Collider2D>();
-#if UNITY_EDITOR
-        Assert.IsNotNull(collider,$"Ladder {gameObject.name} does not contains a collider2D");
-#endif
-        _climbLength = collider.bounds.size.y;
-
-        Vector2 centerPos = (Vector2)transform.position + collider.offset;
-        _ladderTopPos = centerPos + _climbLength * 0.5f * Vector2.up;
-        _ladderBottomPos = centerPos + _climbLength * 0.5f * Vector2.down;
-    }
+  private void Awake()
+  {
+      var collider = GetComponent<Collider2D>();
+  #if UNITY_EDITOR
+      Assert.IsNotNull(collider,$"Ladder {gameObject.name} does not contains a collider2D");
+  #endif
+      _ladderLength = collider.bounds.size.y;
+      Vector2 centerPos = (Vector2)transform.position + collider.offset;
+      _ladderTopPos = centerPos + _ladderLength * 0.5f * Vector2.up;
+      _ladderBottomPos = centerPos + _ladderLength * 0.5f * Vector2.down;
+  }
 }

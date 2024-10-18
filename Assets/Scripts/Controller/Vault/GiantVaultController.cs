@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// ステージ遷移金庫
+/// TODO まだ使っていない
+/// </summary>
 internal class GiantVaultController : InteractableObj
 {
     public override void ActiveInteract()
