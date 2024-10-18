@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Infinity-Vault.sln"
+    "dotnet.defaultSolution": "InfinityVault_PhaseOne.sln"
 }
