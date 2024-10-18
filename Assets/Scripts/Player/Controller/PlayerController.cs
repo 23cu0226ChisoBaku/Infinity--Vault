@@ -1,20 +1,7 @@
-using System;
 using UnityEngine;
-using MMVCFramework.Model;
-using System.Runtime.Remoting.Messaging;
 using MStateMachine;
 using IV.PlayerState;
-using IV;
 
-public interface IPlayerModel
-{
-    public float MoveSpeed {get;set;}
-    public float ClimbSpeed {get;set;}
-    public int Wealth {get;set;}
-    public event Action<float,float> OnChangeMoveSpeedValue;
-    public event Action<float,float> OnChangeClimbSpeedValue;
-    public event Action<int,int> OnChangeWealthValue;
-}
 
 [RequireComponent(typeof(PlayerModelContainer))]
 public class PlayerController : MonoBehaviour, IItemGetable
@@ -74,11 +61,13 @@ public class PlayerController : MonoBehaviour, IItemGetable
             _ability.OnActiveAbility += () => {
                                                 _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Ability);
                                                 _capsuleCollider.enabled = false;
+                                                _rigidbody2D.isKinematic = true;
                                                 Debug.Log("On active ability");
                                             };
             _ability.OnFinishAbility += () => {
                                                 _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Idle);
                                                 _capsuleCollider.enabled = true;
+                                                _rigidbody2D.isKinematic = false;
                                                 Debug.Log("On finish ability");
                                             };
             _ability.OnCooldown += deltaTime => {
@@ -114,14 +103,14 @@ public class PlayerController : MonoBehaviour, IItemGetable
             }
         }
 
-        // Debug.Log(_playerStateMachine.CurrentState);
+        Debug.Log(_playerStateMachine.CurrentState);
 
         _playerStateMachine.Update(Time.deltaTime);
 
-        if (_climbable.IsAlive())
-        {
-            Debug.Log(_climbable.ClimbLength);
-        }
+        // if (_climbable.IsAlive())
+        // {
+        //     Debug.Log(_climbable.ClimbLength);
+        // }
 
     }
     private void FixedUpdate() 

@@ -1,9 +1,13 @@
 using UnityEngine;
-using System;
 
+/// <summary>
+/// 桁式ダイヤル錠パズル
+/// TODO　まだ使っていない
+/// </summary>
 internal sealed class DigitDialPuzzle : Puzzle
 {
-  private RotateDialPuzzleModel _dialPuzzleInfo; // �_�C�������p�Y���f�[�^
+#region Private Field
+  private RotateDialPuzzleModel _dialPuzzleInfo; 
   private float _rotateAngle;                   // �񂷓x��(���v���͐��A�����v���͕�)
   private int _rotateRoundCnt;                  // �񂷎���
   private float _targetAngle;                   // �䂪�����邽�߉񂷕K�v�̓x��
@@ -11,7 +15,7 @@ internal sealed class DigitDialPuzzle : Puzzle
   private Vector2 _previousMousePos;
   private Vector2 _currentMousePos;
   private Camera _currentMainCamera;
-
+#endregion Private Field
   public override void HidePuzzle()
   {
     

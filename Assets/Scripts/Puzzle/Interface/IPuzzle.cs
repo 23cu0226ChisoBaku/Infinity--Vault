@@ -6,8 +6,10 @@ using UnityEngine;
 /// </summary>
 internal interface IPuzzle : IPuzzleBase
 {
+  /// <summary>
+  /// パズルに使うゲームオブジェクト
+  /// </summary>
   public GameObject GameObject{get;}
-
   /// <summary>
   /// パズル更新処理をする
   /// </summary>

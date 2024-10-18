@@ -1,13 +1,12 @@
+public enum ERotateDial
+{
+  Clockwise = 1,          // æ™‚è¨ˆå›ã‚Š
+  CounterClockwise = -1,  // åæ™‚è¨ˆå›ã‚Š
+}
 public struct RotateDialPuzzleModel
 {
-  public enum ERotateDial
-  {
-    Clockwise = 1,          // Œv‰ñ‚è
-    CounterClockwise = -1,  // ”½Œv‰ñ‚è
-  }
-
-  // ƒ_ƒCƒ„ƒ‹‚ğ‰ñ‚·•ûŒü
+  // å›è»¢æ–¹å‘
   public ERotateDial RotateDial;
-  // ‰ñ‚·‰ñ”iüj
+  // å›è»¢ã™ã‚‹å‘¨æ•°
   public int Round;
 }

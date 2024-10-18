@@ -1,3 +1,6 @@
+/// <summary>
+/// プレイヤーデータ
+/// </summary>
 public struct PlayerData
 {
     public float MoveSpeed;

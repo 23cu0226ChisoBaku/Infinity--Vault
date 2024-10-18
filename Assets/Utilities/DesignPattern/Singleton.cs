@@ -5,95 +5,95 @@ namespace MSingleton
 {
 
     /// <summary>
-    /// シングルトン（MonoBehaviour依存）
+    /// シングルトン(MonoBehaviour依存)
     /// </summary>
-    /// <typeparam name="T">ジェネリッククラス</typeparam>
+    /// <typeparam name="T">MonoBehaviour</typeparam>
     public abstract class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     {
-        private static volatile T _instance;
-        private static readonly object padlock = new object();
-        private static bool _isApplicationQuitting = false;
-        public static T Instance
+      private static volatile T _instance;
+      private static readonly object @padlock = new object();
+      private static bool _isApplicationQuitting = false;
+      public static T Instance
+      {
+        get
         {
-            get
-            {
-                if (_isApplicationQuitting)
-                {
-                    return null;
-                }
+          if (_isApplicationQuitting)
+          {
+            return null;
+          }
 
-                if (_instance == null)
-                {
-                    _instance = FindObjectOfType<T>();
+          if (_instance == null)
+          {
+            _instance = FindObjectOfType<T>();
 
-                    // Sceneに見つからなかったら新しく作る
-                    if (_instance == null)
-                    {
-                        lock(padlock)
-                        {
-                            GameObject singleton = new GameObject(typeof(T).Name);
-                            _instance = singleton.AddComponent<T>();
-                            DontDestroyOnLoad(_instance);
-                        }
-                    }
-                }
-                return _instance;
-            }
-        }
-
-        protected virtual void Awake()
-        {
             if (_instance == null)
             {
-                _instance = this as T;
+              lock(padlock)
+              {
+                GameObject singleton = new GameObject(typeof(T).Name);
+                _instance = singleton.AddComponent<T>();
                 DontDestroyOnLoad(_instance);
+              }
             }
-            else
-            {
-                Destroy(gameObject);
-            }
+          }
+          return _instance;
         }
+      }
 
-        private void OnApplicationQuit() 
+      protected virtual void Awake()
+      {
+        if (_instance == null)
         {
-            _isApplicationQuitting = true;
+          _instance = this as T;
+          DontDestroyOnLoad(_instance);
         }
+        else
+        {
+          Destroy(gameObject);
+        }
+      }
 
-        protected SingletonMono() {}
+      private void OnApplicationQuit() 
+      {
+        _isApplicationQuitting = true;
+      }
     }
 
     /// <summary>
-    /// シングルトン（MonoBehaviour依存しない）
+    /// シングルトン(MonoBehaviour非依存)
     /// </summary>
-    /// <typeparam name="T">ジェネリッククラス</typeparam>
+    /// <typeparam name="T">クラスタイプ</typeparam>
     public abstract class Singleton<T> where T : class, new()
     {
-        private volatile static T _instance;
-        private static readonly object padlock = new object();
-        public static T Instance
+      private volatile static T _instance;
+      private static readonly object @padlock = new object();
+      public static T Instance
+      {
+        get
         {
-            get
+          if (_instance == null)
+          {
+            lock (padlock)
             {
-                if (_instance == null)
-                {
-                    // 同時アクセス防止
-                    lock (padlock)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new T();
-                        }
-                    }
-                }
-
-                return _instance;
+              if (_instance == null)
+              {
+                  _instance = new T();
+              }
             }
-        }
+          }
 
-        protected Singleton() 
-        {
-            Assert.IsNull(_instance);
+          return _instance;
         }
+      }
+
+      protected Singleton() 
+      {
+#if UNITY_EDITOR
+        Assert.IsNull(_instance);
+#else
+        System.Diagnostics.Debug.Assert(_instance != null, $"Can not create Singleton {typeof(T).Name} by new operator");
+#endif
+      }
     }
 }
 

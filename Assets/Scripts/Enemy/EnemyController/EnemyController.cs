@@ -1,14 +1,14 @@
 using UnityEngine;
 
 /// <summary>
-/// ƒiƒrƒQ[ƒVƒ‡ƒ“‚ÅˆÚ“®‚·‚éƒIƒuƒWƒFƒNƒg
+/// ãƒŠãƒ“ã‚²ãƒ¼ã‚¿ãƒ¼ã¤ã‘ã‚‰ã‚Œã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 /// </summary>
 internal interface INavigatable
 {
     /// <summary>
-    /// ƒiƒrƒQ[ƒ^[‚ğİ’è
+    /// ãƒŠãƒ“ã‚²ãƒ¼ã‚¿ãƒ¼ã‚’ã¤ã‘ã‚‹
     /// </summary>
-    /// <param name="navigator"></param>
+    /// <param name="navigator">ãƒŠãƒ“ã‚²ãƒ¼ã‚¿ãƒ¼</param>
     public void SetNavigator(INavigator navigator);
 }
 
@@ -16,6 +16,9 @@ namespace IV
 {
     namespace Enemy
     {
+        /// <summary>
+        /// TODO ã¾ã ä½¿ã£ã¦ã„ãªã„
+        /// </summary>
         internal class EnemyController : MonoBehaviour, INavigatable
         {
             // TODO

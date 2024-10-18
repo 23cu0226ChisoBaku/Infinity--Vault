@@ -1,5 +1,9 @@
-using UnityEngine;
-internal interface IMonoItemGenerator<T> where T : MonoBehaviour
+/// <summary>
+/// MonoBehaviour Itemを生成するインターフェース
+/// TODO リファクタリングする予定
+/// </summary>
+/// <typeparam name="T">MonoBehaviourを継承したItemContainer</typeparam>
+internal interface IMonoItemGenerator<T> where T : ItemContainer
 {
     /// <summary>
     /// アイテムを取得
