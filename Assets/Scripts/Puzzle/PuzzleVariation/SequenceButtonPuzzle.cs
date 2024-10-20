@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using System.Collections.Generic;
 using IV.Puzzle;
 using MLibrary;
@@ -11,7 +10,7 @@ public struct SequenceButtonPuzzleInfo
 
 internal class SequenceButtonPuzzle : Puzzle
 {
-
+  private IPuzzlePanel _puzzlePanel;
   private List<IPuzzleButton> _puzzleButtons;
   private SequenceButtonPuzzleInfo _info;
 
@@ -26,7 +25,16 @@ internal class SequenceButtonPuzzle : Puzzle
     {
       button.HidePuzzle();
     }
+    _puzzlePanel.HidePanel();
     gameObject.SetActive(false);
+
+
+    // TODO
+    if (_puzzleText.IsAlive())
+    {
+      _puzzleText.enabled = false;
+      _puzzleExitHint.enabled = false;
+    }
   }
 
   public override void ResetPuzzle()
@@ -41,12 +49,23 @@ internal class SequenceButtonPuzzle : Puzzle
     {
       _puzzleButtons[0].ShowPuzzle();
     }
+    _puzzlePanel.ShowPanel();
     gameObject.SetActive(true);
+
+
+    // TODO
+    if (_puzzleText.IsAlive())
+    {
+      _puzzleText.enabled = true;
+      _puzzleText.text = $"全てのボタンを押せ！";
+
+      _puzzleExitHint.enabled = true;
+    }
   }
 
   public override void UpdatePuzzle()
   {
-    
+
   }
 
   public void InitInfo(SequenceButtonPuzzleInfo info)
@@ -65,17 +84,24 @@ internal class SequenceButtonPuzzle : Puzzle
 
     // パズル専用ボタンを生成し、シャッフルしてパズルを作る
     {
+      IPuzzleGenerator puzzleGenerator = PuzzleGenerator.Instance;
+
       for(int i = 0; i < _info.ButtonCnt; ++i)
       {
-        IPuzzleGenerator puzzleGenerator = PuzzleGenerator.Instance;
-
         var button = puzzleGenerator.GeneratePuzzleButton();
         button.HidePuzzle();
         _puzzleButtons.Add(button);
       }
 
+      _puzzlePanel = puzzleGenerator.GetPanel();
+      _puzzlePanel.HidePanel();
+
       ResetPuzzleImpl();
     }
+    // TODO This Sucks!!!!
+    _puzzleText = GameObject.Find("PuzzleHint").GetComponent<TMPro.TMP_Text>();
+    _puzzleExitHint = GameObject.Find("PuzzleExitUI").GetComponent<TMPro.TMP_Text>();
+
   }
 
   private void Awake()
@@ -90,7 +116,7 @@ internal class SequenceButtonPuzzle : Puzzle
   private void ResetPuzzleImpl()
   {
     // Clearコールバックを削除
-    _onPuzzleClear.Unsubscribe(DisposeButtons);
+    _onPuzzleClear.Unsubscribe(DisposeImpl);
 
     // ボタンをシャッフルする
     _puzzleButtons.Shuffle();
@@ -117,7 +143,7 @@ internal class SequenceButtonPuzzle : Puzzle
     TestSetPos();
 
     // パズルが解かれたら実行するイベントをバインド
-    _onPuzzleClear += DisposeButtons;
+    _onPuzzleClear += DisposeImpl;
   }
 
   private void TestSetPos()
@@ -132,7 +158,7 @@ internal class SequenceButtonPuzzle : Puzzle
     }
   }
 
-  private void DisposeButtons()
+  private void DisposeImpl()
   {
     foreach(var button in _puzzleButtons)
     {
@@ -140,6 +166,11 @@ internal class SequenceButtonPuzzle : Puzzle
       {
         button.DisposeButton();
       }
+    }
+
+    if (_puzzlePanel.IsAlive())
+    {
+      _puzzlePanel.DisposePanel();
     }
   }
 }

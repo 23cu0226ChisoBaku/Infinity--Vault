@@ -11,15 +11,9 @@ public interface INavigator
 internal class Navigator : INavigator
 {
   private bool _canNavigate = false;
-  private readonly static float DISTANCE_EPSILON;
   private Vector2 _destination;
   private Transform _navigatorUser;
   private bool _isNavigating;
-
-  static Navigator()
-  {
-    DISTANCE_EPSILON = 0.001f;
-  }
 
   public void InitNavigator(Transform userTransform)
   {

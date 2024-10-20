@@ -28,7 +28,6 @@ public class PuzzleController : IPuzzleController
   }
   private DisposableEvent _onClearEvent;
   private IPuzzle _puzzle;
-  private IPuzzlePanel _puzzlePanel;
   private bool _isAllPuzzleClear;
   private bool _isActive;
 
@@ -81,6 +80,7 @@ public class PuzzleController : IPuzzleController
     _isActive = false;
 
     PuzzleManager.Instance.RegisterPuzzle(this);
+    PuzzleManager.Instance.OnExitPuzzle += ((IPuzzleController)this).Deactive;
 
   }
   void IPuzzleController.InitPuzzle(EPuzzleDifficulty difficulty)
@@ -115,7 +115,6 @@ public class PuzzleController : IPuzzleController
       _puzzle.HidePuzzle();
     }
 
-    _puzzlePanel = puzzleGenerator.GetPanel();
   }
 
   void IPuzzleController.UpdatePuzzleState()
@@ -136,10 +135,7 @@ public class PuzzleController : IPuzzleController
 
   void IPuzzleController.TermPuzzle()
   {
-    if (_puzzle.IsAlive())
-    {
-      _puzzle.HidePuzzle();
-    }
+    PuzzleManager.Instance.OnExitPuzzle += ((IPuzzleController)this).Deactive;
   }
 
   void IPuzzleController.Active()
@@ -178,6 +174,8 @@ public class PuzzleManager : SingletonMono<PuzzleManager>
 {
   private List<IPuzzleController> _puzzleCtrls;
 
+  public event Action OnExitPuzzle;
+
   protected override void Awake()
   {
     base.Awake();
@@ -206,5 +204,11 @@ public class PuzzleManager : SingletonMono<PuzzleManager>
     {
       _puzzleCtrls.Remove(unregisterPuzzle);
     }
+  }
+
+  public void ExitPuzzle()
+  {
+    // TODO Temp Code
+    OnExitPuzzle?.Invoke();
   }
 }

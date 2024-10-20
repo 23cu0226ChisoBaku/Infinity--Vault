@@ -16,13 +16,13 @@ internal sealed class RotateDialPuzzle : Puzzle
 // プライベートフィールド
 #region Private Field
   // ダイヤル錠(回す)パズルデータ
-  private RotateDialPuzzleModel _dialPuzzleInfo; 
+  private RotateDialPuzzleInfo _dialPuzzleInfo; 
   // 回した角度の度数(Degree)(時計回りは正、反時計回りは負)
   private float _totalRotateAngle;  
   // 何周回したカウンター                 
   private int _rotateRoundCnt;  
   // 謎を解くため回す必要がある度数(Degree)                
-  private float _targetAngle;  
+  private float _clearTargetAngle;  
   // マウスでドラッグしているか                 
   private bool _isDragging;
   // 前フレームのマウス座標(Unity ワールド座標)
@@ -31,6 +31,7 @@ internal sealed class RotateDialPuzzle : Puzzle
   private Vector2 _currentMousePos;
   // メインカメラ
   private Camera _currentMainCamera;
+  private IPuzzlePanel _puzzlePanel;
 #endregion Private Field
 // End of プライベートフィールド
 
@@ -40,8 +41,20 @@ internal sealed class RotateDialPuzzle : Puzzle
 #region IPuzzle
   public override void HidePuzzle()
   {
+    if (_puzzlePanel.IsAlive())
+    {
+      _puzzlePanel.HidePanel();
+    }
+
     gameObject.SetActive(false);
     IsPuzzleActive = false;
+
+    // TODO
+    if (_puzzleText.IsAlive())
+    {
+      _puzzleText.enabled = false;
+      _puzzleExitHint.enabled = false;
+    }
   }
 
   public override void ResetPuzzle()
@@ -51,8 +64,19 @@ internal sealed class RotateDialPuzzle : Puzzle
   }
   public override void ShowPuzzle()
   {
+    if (_puzzlePanel.IsAlive())
+    {
+      _puzzlePanel.ShowPanel();
+    }
     gameObject.SetActive(true);
     IsPuzzleActive = true;
+
+    // TODO
+    if (_puzzleText.IsAlive())
+    {
+      _puzzleText.enabled = true;
+      _puzzleExitHint.enabled = true;
+    }
   }  
   public override void UpdatePuzzle()
   {
@@ -76,22 +100,35 @@ internal sealed class RotateDialPuzzle : Puzzle
     _totalRotateAngle += -rotateAngle;
 
     // Strategy
-    if (_totalRotateAngle >= _targetAngle)
+    if (_totalRotateAngle >= _clearTargetAngle)
     {
         var adjustRotate = transform.rotation;
-        adjustRotate.z = - _targetAngle % 360f;
+        adjustRotate.z = - _clearTargetAngle % 360f;
         transform.rotation = adjustRotate;
 
         _onPuzzleClear?.Invoke();
     }
+    _puzzleText.text = $"時計回り{_dialPuzzleInfo.Round - (int)(_totalRotateAngle / 360f)}周";
   }
 #endregion IPuzzle
 // End of IPuzzleインターフェース
-  public void InitInfo(RotateDialPuzzleModel puzzleInfo)
+  public void InitInfo(RotateDialPuzzleInfo puzzleInfo)
   {
     _dialPuzzleInfo = puzzleInfo;
 
-    _targetAngle = (int)_dialPuzzleInfo.RotateDial * _dialPuzzleInfo.Round * 360f; 
+    _clearTargetAngle = (int)_dialPuzzleInfo.RotateDial * _dialPuzzleInfo.Round * 360f; 
+
+    if (_puzzlePanel == null)
+    {
+      IPuzzleGenerator puzzleGenerator = PuzzleGenerator.Instance;
+      _puzzlePanel = puzzleGenerator.GetPanel();
+    }
+
+    // TODO
+    _puzzleText = GameObject.Find("PuzzleHint").GetComponent<TMPro.TMP_Text>();
+    _puzzleText.text = $"時計回り{_dialPuzzleInfo.Round}周";
+
+    _puzzleExitHint = GameObject.Find("PuzzleExitUI").GetComponent<TMPro.TMP_Text>();
   }
 
   public override IPuzzle AcceptDifficulty(EPuzzleDifficulty difficulty)
@@ -121,7 +158,7 @@ internal sealed class RotateDialPuzzle : Puzzle
     _isDragging = false;
 
     _currentMainCamera = Camera.main;
-    OnPuzzleClear += () =>
+    ((IPuzzle)this).OnPuzzleClear += () =>
     {
       IsPuzzleCleared = true;
       _isDragging = false;
@@ -163,6 +200,15 @@ internal sealed class RotateDialPuzzle : Puzzle
   {
     _previousMousePos = Vector2.zero;
     _currentMousePos = Vector2.zero;
+  }
+
+  protected override void OnDestroy()
+  {
+    base.OnDestroy();
+    if(_puzzlePanel.IsAlive())
+    {
+      _puzzlePanel.DisposePanel();
+    }
   }
 
 }

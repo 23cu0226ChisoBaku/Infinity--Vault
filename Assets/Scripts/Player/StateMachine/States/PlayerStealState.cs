@@ -31,6 +31,12 @@ namespace IV
                 _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Idle);
               }
               Debug.Log("Stealing");
+              if (Input.GetKeyDown(KeyCode.E))
+              {
+                _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Idle);
+                PuzzleManager.Instance.ExitPuzzle();
+              }
+
             }
             public override void FixedUpdateState(float fixedDeltaTime)
             {

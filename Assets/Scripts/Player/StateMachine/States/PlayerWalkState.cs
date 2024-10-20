@@ -20,18 +20,14 @@ namespace IV
             {
 
             }
-
             public override void EnterState()
             {
                 _playerMoveDir = 0;
             }
-
             public override void ExitState()
             {
                 _context.PlayerRigidbody.velocity = Vector2.zero;
             }
-
-
             public override void UpdateState(float deltaTime)
             {
                 _playerMoveDir = 0;
@@ -49,19 +45,25 @@ namespace IV
                 {
                     _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Idle);
                 }
-                else if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    _context.PlayerController.GetAbility()?.ActiveAbility();
-                }
                 else if (!_context.PlayerController.IsGrounded())
                 {
                     _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Fall);
                 }
+                else if (Input.GetKeyDown(KeyCode.Space))
+                {
+                  // TODO Deactive Ability Temp
+                  // _context.PlayerController.GetAbility()?.ActiveAbility();
+                }
+                // ものの操作試みる
+                else
+                {
+                  _context.PlayerController.TryInteractObj();
+                }
             }
             public override void FixedUpdateState(float fixedDeltaTime)
             {
-                float playerMoveSpeed = _context.Model.MoveSpeed;
-                _context.PlayerRigidbody.velocity = new Vector2(_playerMoveDir * playerMoveSpeed, 0);
+              float playerMoveSpeed = _context.Model.MoveSpeed;
+              _context.PlayerRigidbody.velocity = new Vector2(_playerMoveDir * playerMoveSpeed, 0);
             }
         }
     }

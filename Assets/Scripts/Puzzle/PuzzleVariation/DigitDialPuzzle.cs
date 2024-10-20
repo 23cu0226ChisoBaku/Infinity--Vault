@@ -7,7 +7,7 @@ using UnityEngine;
 internal sealed class DigitDialPuzzle : Puzzle
 {
 #region Private Field
-  private RotateDialPuzzleModel _dialPuzzleInfo; 
+  private RotateDialPuzzleInfo _dialPuzzleInfo; 
   private float _rotateAngle;                   // �񂷓x��(���v���͐��A�����v���͕�)
   private int _rotateRoundCnt;                  // �񂷎���
   private float _targetAngle;                   // �䂪�����邽�߉񂷕K�v�̓x��
@@ -50,7 +50,7 @@ internal sealed class DigitDialPuzzle : Puzzle
         _onPuzzleClear?.Invoke();
     }
   }
-  public void InitInfo(RotateDialPuzzleModel puzzleInfo)
+  public void InitInfo(RotateDialPuzzleInfo puzzleInfo)
   {
     _dialPuzzleInfo = puzzleInfo;
 
@@ -74,7 +74,7 @@ internal sealed class DigitDialPuzzle : Puzzle
     // IPuzzleGenerator generator = PuzzleGenerator.Instance;
     // _dialPuzzle = generator.GenerateDialPuzzle(EPuzzleDifficulty.Hard,EDialPuzzleType.Rotate);
 
-    OnPuzzleClear += () =>
+    ((IPuzzle)this).OnPuzzleClear += () =>
     {
       IsPuzzleCleared = true;
       _isDragging = false;

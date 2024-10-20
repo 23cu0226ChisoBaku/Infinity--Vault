@@ -3,7 +3,7 @@ public enum ERotateDial
   Clockwise = 1,          // 時計回り
   CounterClockwise = -1,  // 反時計回り
 }
-public struct RotateDialPuzzleModel
+public struct RotateDialPuzzleInfo
 {
   // 回転方向
   public ERotateDial RotateDial;

@@ -13,6 +13,6 @@ public class TestButtonPuzzle : MonoBehaviour
 
     buttonPuzzle.ShowPuzzle();
 
-    buttonPuzzle.OnPuzzleClear += () => { Destroy(buttonPuzzle.GameObject,5f);};
+    // buttonPuzzle.OnPuzzleClear += () => { Destroy(buttonPuzzle.GameObject,5f);};
   }
 }

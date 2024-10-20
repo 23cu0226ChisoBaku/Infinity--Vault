@@ -44,7 +44,7 @@ public class EasyPuzzleSetter : IPuzzleDifficultySetter
 {
   RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
   {
-    RotateDialPuzzleModel info = new RotateDialPuzzleModel();
+    RotateDialPuzzleInfo info = new RotateDialPuzzleInfo();
 
     info.RotateDial = ERotateDial.Clockwise;
     info.Round = 2;
@@ -72,7 +72,7 @@ public class MediumPuzzleSetter : IPuzzleDifficultySetter
 {
   RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
   {
-    RotateDialPuzzleModel info = new RotateDialPuzzleModel();
+    RotateDialPuzzleInfo info = new RotateDialPuzzleInfo();
 
     info.RotateDial = ERotateDial.Clockwise;
     info.Round = 3;
@@ -100,7 +100,7 @@ public class HardPuzzleSetter : IPuzzleDifficultySetter
 {
   RotateDialPuzzle IPuzzleDifficultySetter.SetDifficulty(RotateDialPuzzle puzzle)
   {
-    RotateDialPuzzleModel info = new RotateDialPuzzleModel();
+    RotateDialPuzzleInfo info = new RotateDialPuzzleInfo();
 
     info.RotateDial = ERotateDial.Clockwise;
     info.Round = 5;

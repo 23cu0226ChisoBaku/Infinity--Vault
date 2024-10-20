@@ -96,6 +96,7 @@ public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
     // TODO
     // テストのため、プレイヤーをアイテムの生成にする
     VaultManager.Instance.InitItem();
+
   }
     private void Update()
     {
@@ -110,18 +111,6 @@ public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
             }
         }
 
-        if (_interactable.IsAlive())
-        {
-            if (Input.GetKeyDown(_interactable.GetTargetInfo().InteractKey))
-            {
-                var targetInteracteInfo = _interactable.GetTargetInfo();
-                if (targetInteracteInfo.Name.Equals("Vault"))
-                {
-                    _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Steal);
-                }
-                _interactable.DoInteract();          
-            }
-        }
 
         Debug.Log(_playerStateMachine.CurrentState);
 
@@ -137,7 +126,16 @@ public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
 // end of Unity main loop message
 
 #region Interface
-
+    void ICanBeCaught.GetCaught(EnemyController enemy)
+    {
+      Debug.Log($"Caught by {enemy.name}");
+      // TODO Temp Code
+      {
+        var currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
+        Time.timeScale = 1f;
+      }
+    }
     public void GetItem(GemContainer gem)
     {
         _playerModelContainer.AddWealth(gem.Worth);
@@ -199,6 +197,22 @@ public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
         {
             return false;
         }
+    }
+
+    public void TryInteractObj()
+    {     
+      if (_interactable.IsAlive())
+      {
+        if (Input.GetKeyDown(_interactable.GetTargetInfo().InteractKey))
+        {
+          var targetInteracteInfo = _interactable.GetTargetInfo();
+          if (targetInteracteInfo.Name.Equals("Vault"))
+          {
+            _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Steal);
+          }
+          _interactable.DoInteract();          
+        }
+      }
     }
 
     internal IInteractable GetInteractable()
@@ -264,8 +278,8 @@ public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
             Destroy(_noFrictionMat);
             _noFrictionMat = null;
         }
+        
     }
-
 
 #if UNITY_EDITOR
     private void OnDrawGizmos() 
@@ -284,13 +298,6 @@ public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
         }
     }
 
-    void ICanBeCaught.GetCaught(EnemyController enemy)
-    {
-        Debug.Log($"Caught by {enemy.name}");
-        // TODO Temp Code
-        var currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
-    }
 
 #endif
     // DrawGizmos

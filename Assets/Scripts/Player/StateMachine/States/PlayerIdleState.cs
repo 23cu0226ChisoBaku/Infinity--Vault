@@ -46,15 +46,21 @@ namespace IV
             _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Climb);
           }
         }
-        // アビリティ発動ボタンを押したら
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-          _context.PlayerController.GetAbility()?.ActiveAbility();
-        }
         // 接地していなかったら落下状態
         else if (!_context.PlayerController.IsGrounded())
         {
           _context.StateMachineSwitch.SwitchNextState(PlayerStateMachine.EPlayerState.Fall);
+        }
+        // アビリティ発動ボタンを押したら
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+          // TODO Deactive Ability Temp
+          //_context.PlayerController.GetAbility()?.ActiveAbility();
+        }
+        // ものの操作試みる
+        else
+        {
+          _context.PlayerController.TryInteractObj();
         }
       }
     }

@@ -14,7 +14,7 @@ public class TestDrag : MonoBehaviour
     _isAllClear = false;
     puzzleGenerator = PuzzleGenerator.Instance;
     monoPuzzle = puzzleGenerator.GeneratePuzzle(EPuzzleDifficulty.Hard,EDialPuzzleType.Rotate);
-    monoPuzzle.GameObject.transform.position = Vector2.zero;
+    // monoPuzzle.GameObject.transform.position = Vector2.zero;
 
     monoPuzzle.OnPuzzleClear += Clear;
   }

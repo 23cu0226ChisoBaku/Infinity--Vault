@@ -1,5 +1,6 @@
 using UnityEngine;
 using MPathFinder;
+using TMPro;
 
 /// <summary>
 /// ナビゲーター設定できるオブジェクト
@@ -66,6 +67,7 @@ namespace IV
       AStarPoint[] testPath;
       private int pathFindIndex = 0;
 
+      public TMP_Text distanceUI;
 
       public Transform Target;
 
@@ -119,6 +121,11 @@ namespace IV
             Vector2 nextPos = new Vector2((float)next.y - 16.5f,-(float)next.x + 9.5f);
             _navigator.StartNavigate(nextPos);
           }
+        }
+
+        if (distanceUI != null)
+        {
+          distanceUI.text = $"敵との距離{((Target.position - transform.position).magnitude - 5f).ToString("F2")}M";
         }
       }
       public void SetNavigator(INavigator navigator)

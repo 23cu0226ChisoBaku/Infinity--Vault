@@ -43,6 +43,7 @@ public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
   private IFactory<GameObject> _digitDialPuzzleFactory;
   private IFactory<GameObject> _puzzleButtonFactory;
   private IFactory<GameObject> _sequenceButtonPuzzleFactory;
+  private IFactory<GameObject> _puzzlePanelFactory;
 
   public PuzzleGenerator()
   {
@@ -56,11 +57,12 @@ public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
     _digitDialPuzzleFactory = new DigitDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(digitDialPuzzlePrefab);});
     _puzzleButtonFactory = new TemplateFactory(() => { return UnityEngine.Object.Instantiate(puzzleButtonPrefab);});
     _sequenceButtonPuzzleFactory = new TemplateFactory(() => { return UnityEngine.Object.Instantiate(buttonPuzzlePrefab);});
+    _puzzlePanelFactory = new TemplateFactory(() => { return UnityEngine.Object.Instantiate(puzzlePanelPrefab);});
   }
 
     IPuzzlePanel IPuzzleGenerator.GetPanel()
     {
-      return null;
+      return _puzzlePanelFactory.GetProduct().GetComponent<IPuzzlePanel>();
     }
 
     IPuzzle IPuzzleGenerator.GeneratePuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
