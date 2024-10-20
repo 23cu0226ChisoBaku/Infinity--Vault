@@ -32,6 +32,7 @@ internal interface IPuzzleGenerator
   IPuzzle GeneratePuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType);
   IPuzzle GeneratePuzzle(EPuzzleDifficulty difficulty, EDialPuzzleType dialPuzzleType);
   IPuzzleButton GeneratePuzzleButton();
+  IPuzzlePanel GetPanel();
 }
 /// <summary>
 /// パズルを生成するクラス
@@ -49,6 +50,7 @@ public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
     var digitDialPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/DigitDialPuzzle");
     var puzzleButtonPrefab = Resources.Load<GameObject>("Prefabs/Puzzle/PuzzleButton");
     var buttonPuzzlePrefab = Resources.Load<GameObject>("Prefabs/Puzzle/SequenceButtonPuzzle");
+    var puzzlePanelPrefab = Resources.Load<GameObject>("Prefabs/Puzzle/PuzzlePanel");
     // TODO ファクトリーを見直す
     _rotateDialPuzzleFactory = new RotateDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(rotateDialPuzzlePrefab);});
     _digitDialPuzzleFactory = new DigitDialPuzzleFactory(() => { return UnityEngine.Object.Instantiate(digitDialPuzzlePrefab);});
@@ -56,7 +58,12 @@ public class PuzzleGenerator : Singleton<PuzzleGenerator>,IPuzzleGenerator
     _sequenceButtonPuzzleFactory = new TemplateFactory(() => { return UnityEngine.Object.Instantiate(buttonPuzzlePrefab);});
   }
 
-  IPuzzle IPuzzleGenerator.GeneratePuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
+    IPuzzlePanel IPuzzleGenerator.GetPanel()
+    {
+      return null;
+    }
+
+    IPuzzle IPuzzleGenerator.GeneratePuzzle(EPuzzleDifficulty difficulty, EButtonPuzzleType buttonPuzzleType)
   {
     return buttonPuzzleType switch
     {

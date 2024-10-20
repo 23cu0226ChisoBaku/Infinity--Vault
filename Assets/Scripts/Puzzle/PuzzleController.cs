@@ -28,6 +28,7 @@ public class PuzzleController : IPuzzleController
   }
   private DisposableEvent _onClearEvent;
   private IPuzzle _puzzle;
+  private IPuzzlePanel _puzzlePanel;
   private bool _isAllPuzzleClear;
   private bool _isActive;
 
@@ -113,6 +114,8 @@ public class PuzzleController : IPuzzleController
                                       };
       _puzzle.HidePuzzle();
     }
+
+    _puzzlePanel = puzzleGenerator.GetPanel();
   }
 
   void IPuzzleController.UpdatePuzzleState()

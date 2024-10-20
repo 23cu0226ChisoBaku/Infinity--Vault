@@ -67,15 +67,14 @@ internal sealed class RotateDialPuzzle : Puzzle
     // マウスの座標で移動する角度を計算(正だったら反時計回り、負だったら時計回り)
     float inputMoveAngle = Vector2.SignedAngle(_previousMousePos - (Vector2)transform.position, _currentMousePos - (Vector2)transform.position);
 
-    float maxInputAngleCurrentFrame = MAX_INPUT_ANGLE * Time.deltaTime;
+    float maxInputAngleCurrentFrame = MAX_INPUT_ANGLE * Time.unscaledDeltaTime;
     inputMoveAngle = Mathf.Clamp(inputMoveAngle,-maxInputAngleCurrentFrame,maxInputAngleCurrentFrame);
 
-    var rotateAngle = inputMoveAngle / maxInputAngleCurrentFrame * MAX_ROTATE_SPEED * Time.deltaTime; 
+    var rotateAngle = inputMoveAngle / maxInputAngleCurrentFrame * MAX_ROTATE_SPEED * Time.unscaledDeltaTime; 
     transform.Rotate(0,0,rotateAngle);
 
     _totalRotateAngle += -rotateAngle;
 
-    Debug.Log(_totalRotateAngle);
     // Strategy
     if (_totalRotateAngle >= _targetAngle)
     {

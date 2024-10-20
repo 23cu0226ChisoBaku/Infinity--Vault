@@ -1,10 +1,20 @@
 using UnityEngine;
 using MStateMachine;
 using IV.PlayerState;
+using IV.Enemy;
 
+public interface ICanBeCaught
+{
+    public void GetCaught(EnemyController enemy);
+}
+
+public interface ICatchable
+{
+    public void OnCatch(ICanBeCaught beCaught);
+}
 
 [RequireComponent(typeof(PlayerModelContainer))]
-public class PlayerController : MonoBehaviour, IItemGetable
+public class PlayerController : MonoBehaviour, IItemGetable, ICanBeCaught
 {
     private Rigidbody2D _rigidbody2D;
     private CapsuleCollider2D _capsuleCollider;
@@ -13,6 +23,8 @@ public class PlayerController : MonoBehaviour, IItemGetable
     private PlayerModelContainer _playerModelContainer;
 
     private IClimbable _climbable;
+
+    
 
     // TODO
     private IInteractable _interactable = null;
@@ -39,7 +51,7 @@ public class PlayerController : MonoBehaviour, IItemGetable
 
         if (_rigidbody2D != null)
         {
-            _noFrictionMat = new PhysicsMaterial2D();
+            _noFrictionMat = new PhysicsMaterial2D("Zero_Friction_Player");
             _noFrictionMat.friction = 0f;
             _rigidbody2D.sharedMaterial = _noFrictionMat;
         }
@@ -87,6 +99,9 @@ public class PlayerController : MonoBehaviour, IItemGetable
   }
     private void Update()
     {
+        // ステートマシンを更新する
+        _playerStateMachine.Update(Time.deltaTime);
+
         // アビリティクールダウン
         {
             if ((_ability != null) && _ability.IsCoolingDown())
@@ -99,29 +114,22 @@ public class PlayerController : MonoBehaviour, IItemGetable
         {
             if (Input.GetKeyDown(_interactable.GetTargetInfo().InteractKey))
             {
-                _interactable.DoInteract();
+                var targetInteracteInfo = _interactable.GetTargetInfo();
+                if (targetInteracteInfo.Name.Equals("Vault"))
+                {
+                    _playerStateMachine.SwitchNextState(PlayerStateMachine.EPlayerState.Steal);
+                }
+                _interactable.DoInteract();          
             }
         }
 
         Debug.Log(_playerStateMachine.CurrentState);
 
-        _playerStateMachine.Update(Time.deltaTime);
-
-        // if (_climbable.IsAlive())
-        // {
-        //     Debug.Log(_climbable.ClimbLength);
-        // }
-
     }
     private void FixedUpdate() 
     {
-        // var fallSpeed = _rigidbody2D.velocity.y < -10f ? -10f : _rigidbody2D.velocity.y;
-        // if (_state == PlayerState.Climb)
-        // {
-        //     fallSpeed = 0f;
-        // }
-        // _rigidbody2D.velocity = new Vector2((int)_moveDir * _playerModelContainer.MoveSpeed, fallSpeed);
 
+        // ステートマシンを更新する
         _playerStateMachine.FixedUpdate(Time.fixedDeltaTime);
 
     }
@@ -193,6 +201,11 @@ public class PlayerController : MonoBehaviour, IItemGetable
         }
     }
 
+    internal IInteractable GetInteractable()
+    {
+        return _interactable;
+    }
+
 #endregion Interface
 // end of Interface
 
@@ -214,6 +227,10 @@ public class PlayerController : MonoBehaviour, IItemGetable
             {
                 
             }
+        }
+        if (other.gameObject.TryGetComponent<ICatchable>(out ICatchable catchable))
+        {
+            catchable.OnCatch(this);
         }
 
     }
@@ -267,11 +284,17 @@ public class PlayerController : MonoBehaviour, IItemGetable
         }
     }
 
+    void ICanBeCaught.GetCaught(EnemyController enemy)
+    {
+        Debug.Log($"Caught by {enemy.name}");
+        // TODO Temp Code
+        var currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentSceneName);
+    }
+
 #endif
     // DrawGizmos
 
     #endregion Unity Message
     // End of Unity Message
-
-
 }
