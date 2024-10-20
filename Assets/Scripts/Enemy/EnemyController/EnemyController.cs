@@ -1,25 +1,27 @@
 using UnityEngine;
 
 /// <summary>
-/// ナビゲーターつけられるオブジェクト
+/// ナビゲーター設定できるオブジェクト
 /// </summary>
-internal interface INavigatable
+internal interface ICanSetNavigator
 {
     /// <summary>
-    /// ナビゲーターをつける
+    /// ナビゲーターを設定
     /// </summary>
     /// <param name="navigator">ナビゲーター</param>
     public void SetNavigator(INavigator navigator);
+}
+
+internal interface INavigatable
+{
+  public Transform GetNavigateTarget();
 }
 
 namespace IV
 {
     namespace Enemy
     {
-        /// <summary>
-        /// TODO まだ使っていない
-        /// </summary>
-        internal class EnemyController : MonoBehaviour, INavigatable
+        internal class EnemyController : MonoBehaviour, ICanSetNavigator,INavigatable
         {
             // TODO
             private INavigator _navigator;
@@ -47,6 +49,10 @@ namespace IV
                 _navigator.InitNavigator(transform);
             }
 
+            public Transform GetNavigateTarget()
+            {
+                return transform;
+            }
         }
 
     }
